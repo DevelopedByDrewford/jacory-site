@@ -97,8 +97,8 @@ export function Booking() {
             </p>
             <div className="bk-contact reveal d3">
               <a href="mailto:hello@jacorywiley.com"><span className="ic">@</span> hello@jacorywiley.com</a>
-              <a href="#" onClick={(e) => e.preventDefault()}><span className="ic">in</span> Connect on LinkedIn</a>
-              <a href="#" onClick={(e) => e.preventDefault()}><span className="ic">ig</span> @jacorywiley</a>
+              <button type="button" className="bk-contact-btn"><span className="ic">in</span> Connect on LinkedIn</button>
+              <button type="button" className="bk-contact-btn"><span className="ic">ig</span> @jacorywiley</button>
             </div>
           </div>
 
@@ -160,9 +160,9 @@ export function Booking() {
         <footer className="foot">
           <div className="fmark">Jacory Wiley<span className="dot">.</span></div>
           <div className="fsoc">
-            <a href="#" onClick={(e) => e.preventDefault()}>Instagram</a>
-            <a href="#" onClick={(e) => e.preventDefault()}>LinkedIn</a>
-            <a href="#" onClick={(e) => e.preventDefault()}>YouTube</a>
+            <button type="button">Instagram</button>
+            <button type="button">LinkedIn</button>
+            <button type="button">YouTube</button>
           </div>
           <div className="fcopy">&copy; {new Date().getFullYear()} Jacory Wiley · Houston &rarr; Atlanta</div>
         </footer>

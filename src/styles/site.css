@@ -229,7 +229,7 @@ img { display: block; max-width: 100%; }
 .book-card .cover .ph { position: absolute; inset: 0; }
 .book-card h4 { font-family: var(--serif); font-weight: 400; font-size: 1.7rem; line-height: 1.1; margin: 0 0 8px; }
 .book-card .bmeta { font-size: 0.9rem; color: var(--muted); line-height: 1.55; margin-bottom: 16px; }
-.book-card .blink { font-family: var(--sans); font-weight: 600; font-size: 0.82rem; color: var(--gold); display: inline-flex; gap: 8px; align-items: center; margin-top: auto; opacity: 0; transform: translateX(-6px); transition: all 0.4s var(--ease); }
+.book-card .blink { font-family: var(--sans); font-weight: 600; font-size: 0.82rem; color: var(--gold); display: inline-flex; gap: 8px; align-items: center; margin-top: auto; opacity: 0; transform: translateX(-6px); transition: all 0.4s var(--ease); background: none; border: none; cursor: pointer; padding: 0; }
 .book-card:hover .blink { opacity: 1; transform: none; }
 
 /* =========================================================
@@ -261,10 +261,14 @@ img { display: block; max-width: 100%; }
 .bk-pitch h2 em { font-style: italic; color: var(--gold); }
 .bk-pitch p { color: var(--ink-soft); font-size: 1.1rem; line-height: 1.7; max-width: 42ch; margin: 0 0 38px; }
 .bk-contact { display: flex; flex-direction: column; gap: 14px; }
-.bk-contact a { display: inline-flex; align-items: center; gap: 14px; white-space: nowrap; text-decoration: none; color: var(--ink-soft); font-size: 1.02rem; transition: color 0.3s var(--ease); width: fit-content; }
-.bk-contact a:hover { color: var(--gold); }
+.bk-contact a,
+.bk-contact-btn { display: inline-flex; align-items: center; gap: 14px; white-space: nowrap; text-decoration: none; color: var(--ink-soft); font-size: 1.02rem; transition: color 0.3s var(--ease); width: fit-content; }
+.bk-contact-btn { background: none; border: none; cursor: pointer; padding: 0; font-family: var(--sans); }
+.bk-contact a:hover,
+.bk-contact-btn:hover { color: var(--gold); }
 .bk-contact .ic { width: 38px; height: 38px; border: 1px solid var(--line); border-radius: 50%; display: grid; place-items: center; font-size: 0.9rem; transition: all 0.35s var(--ease); }
-.bk-contact a:hover .ic { border-color: var(--gold); background: var(--gold-glow); }
+.bk-contact a:hover .ic,
+.bk-contact-btn:hover .ic { border-color: var(--gold); background: var(--gold-glow); }
 
 .bk-form { background: var(--bg-raise); border: 1px solid var(--line); padding: 44px; }
 .bk-form h3 { font-family: var(--serif); font-weight: 400; font-size: 1.7rem; margin: 0 0 28px; }
@@ -290,8 +294,10 @@ img { display: block; max-width: 100%; }
 .foot .fmark .dot { color: var(--gold); }
 .foot .fcopy { font-size: 0.82rem; color: var(--faint); }
 .foot .fsoc { display: flex; gap: 24px; }
-.foot .fsoc a { font-size: 0.82rem; color: var(--muted); text-decoration: none; transition: color 0.3s var(--ease); }
-.foot .fsoc a:hover { color: var(--gold); }
+.foot .fsoc a,
+.foot .fsoc button { font-size: 0.82rem; color: var(--muted); text-decoration: none; transition: color 0.3s var(--ease); background: none; border: none; cursor: pointer; padding: 0; font-family: var(--sans); }
+.foot .fsoc a:hover,
+.foot .fsoc button:hover { color: var(--gold); }
 
 /* =========================================================
    RESPONSIVE

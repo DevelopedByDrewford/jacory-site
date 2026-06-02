@@ -55,12 +55,12 @@ export default function Books() {
               discovering that not being able to see it is exactly how every great dream begins.
             </p>
             <div className="reveal d3" style={{ display: 'flex', gap: '14px', flexWrap: 'wrap' }}>
-              <a className="btn btn-solid" href="#" onClick={(e) => e.preventDefault()}>
+              <button type="button" className="btn btn-solid">
                 Get the book <span className="arr">&rarr;</span>
-              </a>
-              <a className="btn btn-ghost" href="#" onClick={(e) => e.preventDefault()}>
+              </button>
+              <button type="button" className="btn btn-ghost">
                 Read an excerpt
-              </a>
+              </button>
             </div>
           </div>
         </div>
@@ -77,9 +77,9 @@ export default function Books() {
               <h4>{b.title}</h4>
               <div className="bmeta">{b.meta}</div>
               <p style={{ color: 'var(--ink-soft)', fontSize: '0.98rem', lineHeight: 1.6, margin: '0 0 16px' }}>{b.desc}</p>
-              <a className="blink" href="#" onClick={(e) => e.preventDefault()}>
+              <button type="button" className="blink">
                 {b.live ? 'Get the book' : 'Join the waitlist'} <span className="arr">&rarr;</span>
-              </a>
+              </button>
             </article>
           ))}
         </div>
