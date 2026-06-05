@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import { Placeholder } from '../hooks';
+import BookModal from './BookModal';
 
 const grid = [
   {
@@ -25,6 +27,8 @@ const grid = [
 ];
 
 export default function Books() {
+  const [modalOpen, setModalOpen] = useState(false);
+
   return (
     <section className="section books" id="books">
       <div className="wrap">
@@ -55,7 +59,7 @@ export default function Books() {
               discovering that not being able to see it is exactly how every great dream begins.
             </p>
             <div className="reveal d3" style={{ display: 'flex', gap: '14px', flexWrap: 'wrap' }}>
-              <button type="button" className="btn btn-solid">
+              <button type="button" className="btn btn-solid" onClick={() => setModalOpen(true)}>
                 Get the book <span className="arr">&rarr;</span>
               </button>
               <button type="button" className="btn btn-ghost">
@@ -84,6 +88,7 @@ export default function Books() {
           ))}
         </div>
       </div>
+      <BookModal open={modalOpen} onClose={() => setModalOpen(false)} />
     </section>
   );
 }
