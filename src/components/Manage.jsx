@@ -1,7 +1,8 @@
 import React, { useState, useEffect, createContext, useContext } from 'react';
 import { Link, Outlet, NavLink, useMatch, useNavigate } from 'react-router-dom';
 import { collection, getDocs } from 'firebase/firestore';
-import { db } from '../firebase';
+import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
+import { db, auth } from '../firebase';
 
 const SECTIONS = [
   {
@@ -58,16 +59,89 @@ function ManageSidebar() {
   );
 }
 
+function LoginForm() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+    } catch (err) {
+      setError('Invalid email or password.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div style={{ minHeight: '100vh', background: '#f8f7f5', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+      <div style={{ width: '100%', maxWidth: 360, padding: '0 16px' }}>
+        <div style={{ background: '#fff', border: '1px solid #e0ddd8', borderRadius: 12, padding: '40px 36px' }}>
+          <h1 style={{ margin: '0 0 6px', fontSize: 20, fontWeight: 700, color: '#1a1a1a' }}>Management Portal</h1>
+          <p style={{ margin: '0 0 28px', fontSize: 13, color: '#888' }}>Sign in to continue.</p>
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+            <div>
+              <label style={{ display: 'block', fontSize: 12, fontWeight: 600, marginBottom: 5, color: '#444' }}>Email</label>
+              <input
+                type="email"
+                autoComplete="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                style={loginInputStyle}
+              />
+            </div>
+            <div>
+              <label style={{ display: 'block', fontSize: 12, fontWeight: 600, marginBottom: 5, color: '#444' }}>Password</label>
+              <input
+                type="password"
+                autoComplete="current-password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                style={loginInputStyle}
+              />
+            </div>
+            {error && <p style={{ margin: 0, fontSize: 13, color: '#c00' }}>{error}</p>}
+            <button type="submit" disabled={loading} style={loginBtnStyle}>
+              {loading ? 'Signing in…' : 'Sign in'}
+            </button>
+          </form>
+        </div>
+        <div style={{ marginTop: 20, textAlign: 'center' }}>
+          <Link to="/" style={{ fontSize: 13, color: '#888', textDecoration: 'none' }}>← Return home</Link>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function ManageLayout() {
   const [books, setBooks] = useState([]);
   const [editingId, setEditingId] = useState(null);
+  const [user, setUser] = useState(undefined);
+
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, (u) => setUser(u ?? null));
+    return unsub;
+  }, []);
 
   const fetchBooks = () =>
     getDocs(collection(db, 'books')).then((snap) =>
       setBooks(snap.docs.map((d) => ({ id: d.id, ...d.data() })))
     );
 
-  useEffect(() => { fetchBooks(); }, []);
+  useEffect(() => {
+    if (user) fetchBooks();
+  }, [user]);
+
+  if (user === undefined) return null;
+  if (user === null) return <LoginForm />;
 
   return (
     <ManageBooksCtx.Provider value={{ books, fetchBooks, editingId, setEditingId }}>
@@ -76,9 +150,18 @@ export function ManageLayout() {
           <Link to="/manage" style={{ fontWeight: 700, fontSize: 15, letterSpacing: '0.04em', color: '#1a1a1a', textDecoration: 'none' }}>
             Management Portal
           </Link>
-          <Link to="/" style={{ fontSize: 13, color: '#666', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 5, padding: '6px 12px', border: '1px solid #e0ddd8', borderRadius: 6, background: '#faf9f7' }}>
-            ← Return home
-          </Link>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <span style={{ fontSize: 12, color: '#aaa' }}>{user.email}</span>
+            <button
+              onClick={() => signOut(auth)}
+              style={{ fontSize: 13, color: '#666', border: '1px solid #e0ddd8', borderRadius: 6, padding: '6px 12px', cursor: 'pointer', background: '#faf9f7' }}
+            >
+              Sign out
+            </button>
+            <Link to="/" style={{ fontSize: 13, color: '#666', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 5, padding: '6px 12px', border: '1px solid #e0ddd8', borderRadius: 6, background: '#faf9f7' }}>
+              ← Return home
+            </Link>
+          </div>
         </header>
         <div style={{ flex: 1, display: 'flex', minHeight: 0 }}>
           <ManageSidebar />
@@ -135,6 +218,18 @@ export default function ManagePortal() {
     </div>
   );
 }
+
+const loginInputStyle = {
+  width: '100%', boxSizing: 'border-box', padding: '9px 11px',
+  border: '1px solid #d0cdc8', borderRadius: 6, fontSize: 14,
+  background: '#fff', color: '#1a1a1a', outline: 'none',
+};
+
+const loginBtnStyle = {
+  padding: '10px 0', background: '#1a1a1a', color: '#fff',
+  border: 'none', borderRadius: 6, cursor: 'pointer',
+  fontWeight: 600, fontSize: 14, marginTop: 4,
+};
 
 const navLinkStyle = (isActive) => ({
   display: 'block', padding: '9px 16px', fontSize: 13, fontWeight: 600,
