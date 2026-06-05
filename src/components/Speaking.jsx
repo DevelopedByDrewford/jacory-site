@@ -1,4 +1,4 @@
-import { scrollToId, Placeholder } from '../hooks';
+import { scrollToId } from '../hooks';
 
 const topics = [
   ['01', "Dream Past What You Can See", "A keynote on chasing a goal when the odds — or your own body — tell you no. Jacory's own story, and the mindset behind it."],

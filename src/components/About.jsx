@@ -1,4 +1,4 @@
-import { useParallax, Placeholder } from '../hooks';
+import { useParallax } from '../hooks';
 
 const miles = [
   ['Houston', 'Born and raised in Texas. He lost his sight as a child — and decided early he would never lose his vision.'],

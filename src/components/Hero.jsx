@@ -1,4 +1,4 @@
-import { useParallax, scrollToId, Placeholder } from '../hooks';
+import { useParallax, scrollToId } from '../hooks';
 
 export default function Hero() {
   const imgRef = useParallax(0.16);
