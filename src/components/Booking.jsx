@@ -1,5 +1,13 @@
 import { useState } from 'react';
 
+const CONTACT_LINKS = [
+  { ic: '@', label: 'Email', href: 'mailto:jacorydwiley@gmail.com' },
+  { ic: 'fb', label: 'Facebook', href: 'https://www.facebook.com/jacory.wiley1' },
+  { ic: 'ig', label: 'Instagram', href: 'https://www.instagram.com/mrdynamo21/' },
+  { ic: 'in', label: 'LinkedIn', href: 'https://www.linkedin.com/in/jacory-wiley-99aa12107/' },
+  { ic: '$', label: 'Cash App', href: 'https://cash.app/$jacorywiley' }
+];
+
 export function Booking() {
   const [form, setForm] = useState({ name: '', email: '', org: '', type: 'Keynote', message: '' });
   const [errors, setErrors] = useState({});
@@ -38,9 +46,13 @@ export function Booking() {
               and Jacory will get back to you personally.
             </p>
             <div className="bk-contact reveal d3">
-              <a href="mailto:hello@jacorywiley.com"><span className="ic">@</span> hello@jacorywiley.com</a>
-              <button type="button" className="bk-contact-btn"><span className="ic">in</span> Connect on LinkedIn</button>
-              <button type="button" className="bk-contact-btn"><span className="ic">ig</span> @jacorywiley</button>
+              {CONTACT_LINKS.map(({ ic, label, href }) =>
+                href ? (
+                  <a key={label} href={href}><span className="ic">{ic}</span> {label}</a>
+                ) : (
+                  <button key={label} type="button" className="bk-contact-btn"><span className="ic">{ic}</span> {label}</button>
+                )
+              )}
             </div>
           </div>
 
@@ -101,11 +113,6 @@ export function Booking() {
 
         <footer className="foot">
           <div className="fmark">Jacory Wiley<span className="dot">.</span></div>
-          <div className="fsoc">
-            <button type="button">Instagram</button>
-            <button type="button">LinkedIn</button>
-            <button type="button">YouTube</button>
-          </div>
           <div className="fcopy">&copy; {new Date().getFullYear()} Jacory Wiley · Houston &rarr; Atlanta</div>
         </footer>
       </div>

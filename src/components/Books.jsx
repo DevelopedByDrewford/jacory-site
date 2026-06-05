@@ -14,22 +14,14 @@ export default function Books() {
   return (
     <section className="section books" id="books">
       <div className="wrap">
-        <div className="books-head">
-          <div>
-            <div className="section-eyebrow reveal">
-              <span className="eyebrow">The Books</span>
-              <span className="num">01</span>
-              <span className="ln" />
-            </div>
-            <h2 className="books-title reveal d1">Stories for kids who dream in the <em>dark</em>.</h2>
-          </div>
-          <p className="books-intro reveal d2">
-            Warm, honest picture books about difference, courage, and the kind of vision that has nothing to do with eyesight.
-          </p>
+        <div className="section-eyebrow reveal">
+          <span className="eyebrow">The Books</span>
+          <span className="num">01</span>
+          <span className="ln" />
         </div>
 
         <div className="feat">
-          <div className="feat-cover reveal">
+          <div className="feat-cover reveal" onClick={() => setModalBook(featured)} style={{ cursor: 'pointer' }}>
             {featured.coverImage
               ? <img src={featured.coverImage} alt={featured.cover} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
               : <Placeholder label={featured.cover} style={{ position: 'absolute', inset: 0 }} />}
@@ -53,7 +45,7 @@ export default function Books() {
         <div className="book-grid">
           {gridBooks.map((b, i) => (
             <article className={`book-card reveal d${(i % 3) + 1}`} key={b.id}>
-              <div className="cover">
+              <div className="cover" onClick={() => setModalBook(b)} style={{ cursor: 'pointer' }}>
                 {b.coverImage
                   ? <img src={b.coverImage} alt={b.cover} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
                   : <Placeholder label={b.cover} style={{ position: 'absolute', inset: 0 }} />}
