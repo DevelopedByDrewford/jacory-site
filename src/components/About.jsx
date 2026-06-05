@@ -77,9 +77,10 @@ export function QuoteBand() {
   return (
     <section className="band" aria-label="Quote">
       <div ref={imgRef} className="band-img">
-        <Placeholder
-          label="Wide cinematic — Jacory mid-swing on the beep baseball field, motion, dust"
-          style={{ position: 'absolute', inset: 0 }}
+        <img
+          src="https://photos.smugmug.com/photos/i-WFG7MNn/0/L3h8pCJk3STwr7wvtnqQ48MMBjz9RcZ5pZrTsP3pT/XL/i-WFG7MNn-XL.jpg"
+          alt="Wide cinematic — Jacory mid-swing on the beep baseball field, motion, dust"
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
         />
       </div>
       <div className="band-veil" />

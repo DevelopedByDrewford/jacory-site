@@ -42,9 +42,10 @@ export function Speaking() {
             </a>
           </div>
           <div className="spk-visual reveal d2">
-            <Placeholder
-              label="Portrait — Jacory speaking on stage, mic in hand, warm light"
-              style={{ position: 'absolute', inset: 0 }}
+            <img
+              src="https://photos.smugmug.com/photos/i-R8CcRxj/0/MpBNZZGz6rWvNMzfvxhFT5JVFvx87pkz82F6gKvKJ/X2/i-R8CcRxj-X2.jpg"
+              alt="Portrait — Jacory speaking on stage, mic in hand, warm light"
+              style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
             />
             <div className="spk-stat">
               <div className="big">Any age.</div>

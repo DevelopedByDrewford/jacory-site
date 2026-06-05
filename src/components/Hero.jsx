@@ -5,9 +5,10 @@ export default function Hero() {
   return (
     <header className="hero" id="top">
       <div ref={imgRef} className="hero-img">
-        <Placeholder
-          label="Full-bleed atmospheric portrait — Jacory at the plate in beep baseball, dusk light"
-          style={{ position: 'absolute', inset: 0 }}
+        <img
+          src="https://photos.smugmug.com/photos/i-sjLJSDw/0/NHTsmXxrTrLWxQ6XpSJwkS5553vb4fVjHkWCJDjsw/XL/i-sjLJSDw-XL.jpg"
+          alt="Full-bleed atmospheric portrait — Jacory at the plate in beep baseball, dusk light"
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
         />
       </div>
       <div className="hero-veil" />
