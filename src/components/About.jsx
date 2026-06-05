@@ -14,7 +14,7 @@ export function About() {
       <div className="wrap">
         <div className="section-eyebrow reveal">
           <span className="eyebrow">About</span>
-          <span className="num">01</span>
+          <span className="num">03</span>
           <span className="ln" />
         </div>
 
@@ -28,12 +28,12 @@ export function About() {
             <div ref={portraitRef} style={{ position: 'absolute', inset: 0 }}>
               <div
                 className="ph"
-                data-label="Portrait — Jacory, warm natural light, three-quarter, holding one of his books"
+                data-label="Portrait — Jacory, warm natural light, holding one of his books"
                 style={{ position: 'absolute', inset: '-6% 0' }}
               >
                 <img
                   src="https://photos.smugmug.com/photos/i-6P9dWTm/0/KF7jsWJWKG688RbdbdBnWPKqrCKFDfdnLm2z6tQ3J/L/i-6P9dWTm-L.jpg"
-                  alt="Portrait — Jacory, warm natural light, three-quarter, holding one of his books"
+                  alt="Portrait — Jacory, warm natural light, holding one of his books"
                   style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
                 />
               </div>

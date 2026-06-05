@@ -2,9 +2,9 @@ import { useState, useEffect } from 'react';
 import { scrollToId } from '../hooks';
 
 const links = [
-  ['about', 'About'],
   ['books', 'Books'],
   ['speaking', 'Speaking'],
+  ['about', 'About'],
 ];
 
 export default function Nav() {

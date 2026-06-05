@@ -1,0 +1,114 @@
+import { useState } from 'react';
+
+export function Booking() {
+  const [form, setForm] = useState({ name: '', email: '', org: '', type: 'Keynote', message: '' });
+  const [errors, setErrors] = useState({});
+  const [sent, setSent] = useState(false);
+
+  const set = (k) => (e) => setForm({ ...form, [k]: e.target.value });
+
+  const validate = () => {
+    const er = {};
+    if (!form.name.trim()) er.name = 'Please add your name.';
+    if (!form.email.trim()) er.email = 'Please add an email.';
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) er.email = 'That email looks off.';
+    if (!form.message.trim()) er.message = 'Tell Jacory a little about your event.';
+    setErrors(er);
+    return Object.keys(er).length === 0;
+  };
+
+  const submit = (e) => {
+    e.preventDefault();
+    if (validate()) setSent(true);
+  };
+
+  return (
+    <section className="booking" id="booking">
+      <div className="wrap">
+        <div className="book-grid2">
+          <div className="bk-pitch">
+            <div className="section-eyebrow reveal">
+              <span className="eyebrow">Work with Jacory</span>
+              <span className="num">04</span>
+              <span className="ln" />
+            </div>
+            <h2 className="reveal d1">Let&rsquo;s put your audience in the <em>batter&rsquo;s box</em>.</h2>
+            <p className="reveal d2">
+              Booking a school visit, a keynote, an author reading, or a virtual session? Send a few details
+              and Jacory will get back to you personally.
+            </p>
+            <div className="bk-contact reveal d3">
+              <a href="mailto:hello@jacorywiley.com"><span className="ic">@</span> hello@jacorywiley.com</a>
+              <button type="button" className="bk-contact-btn"><span className="ic">in</span> Connect on LinkedIn</button>
+              <button type="button" className="bk-contact-btn"><span className="ic">ig</span> @jacorywiley</button>
+            </div>
+          </div>
+
+          <div className="bk-form reveal d2">
+            {sent ? (
+              <div className="form-ok">
+                <div className="ck">✓</div>
+                <h3>Thank you, {form.name.split(' ')[0] || 'friend'}.</h3>
+                <p>Your message is on its way. Jacory reads every note himself and will be in touch soon.</p>
+              </div>
+            ) : (
+              <form onSubmit={submit} noValidate>
+                <h3>Send a booking inquiry</h3>
+                <div className={`field ${errors.name ? 'err' : ''}`}>
+                  <label htmlFor="f-name">Your name</label>
+                  <input id="f-name" type="text" value={form.name} onChange={set('name')} placeholder="Jane Rivera" />
+                  <div className="msg">{errors.name}</div>
+                </div>
+                <div className={`field ${errors.email ? 'err' : ''}`}>
+                  <label htmlFor="f-email">Email</label>
+                  <input id="f-email" type="email" value={form.email} onChange={set('email')} placeholder="jane@school.org" />
+                  <div className="msg">{errors.email}</div>
+                </div>
+                <div className="field">
+                  <label htmlFor="f-org">
+                    Organization <span style={{ textTransform: 'none', letterSpacing: 0 }}>(optional)</span>
+                  </label>
+                  <input id="f-org" type="text" value={form.org} onChange={set('org')} placeholder="Oak Grove Elementary" />
+                </div>
+                <div className="field">
+                  <label htmlFor="f-type">What are you planning?</label>
+                  <select id="f-type" value={form.type} onChange={set('type')}>
+                    <option>Keynote</option>
+                    <option>School visit</option>
+                    <option>Author reading</option>
+                    <option>Workshop</option>
+                    <option>Virtual session</option>
+                    <option>Something else</option>
+                  </select>
+                </div>
+                <div className={`field ${errors.message ? 'err' : ''}`}>
+                  <label htmlFor="f-msg">About your event</label>
+                  <textarea
+                    id="f-msg"
+                    value={form.message}
+                    onChange={set('message')}
+                    placeholder="Audience, date, location, what you're hoping for…"
+                  />
+                  <div className="msg">{errors.message}</div>
+                </div>
+                <button type="submit" className="btn btn-solid">
+                  Send inquiry <span className="arr">&rarr;</span>
+                </button>
+              </form>
+            )}
+          </div>
+        </div>
+
+        <footer className="foot">
+          <div className="fmark">Jacory Wiley<span className="dot">.</span></div>
+          <div className="fsoc">
+            <button type="button">Instagram</button>
+            <button type="button">LinkedIn</button>
+            <button type="button">YouTube</button>
+          </div>
+          <div className="fcopy">&copy; {new Date().getFullYear()} Jacory Wiley · Houston &rarr; Atlanta</div>
+        </footer>
+      </div>
+    </section>
+  );
+}

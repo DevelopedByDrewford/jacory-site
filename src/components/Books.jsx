@@ -18,7 +18,7 @@ export default function Books() {
           <div>
             <div className="section-eyebrow reveal">
               <span className="eyebrow">The Books</span>
-              <span className="num">02</span>
+              <span className="num">01</span>
               <span className="ln" />
             </div>
             <h2 className="books-title reveal d1">Stories for kids who dream in the <em>dark</em>.</h2>

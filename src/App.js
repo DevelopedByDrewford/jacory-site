@@ -6,7 +6,8 @@ import Nav from './components/Nav';
 import Hero from './components/Hero';
 import { About, QuoteBand } from './components/About';
 import Books from './components/Books';
-import { Speaking, Booking } from './components/Speaking';
+import { Speaking } from './components/Speaking';
+import { Booking } from './components/Booking';
 import Manage, { ManageLayout } from './components/Manage';
 import ManageBooks from './components/ManageBooks';
 import CmdK from './components/CmdK';
@@ -19,10 +20,10 @@ function Site() {
       <Nav />
       <main>
         <Hero />
-        <About />
-        <QuoteBand />
         <Books />
         <Speaking />
+        <About />
+        <QuoteBand />
         <Booking />
       </main>
     </>
