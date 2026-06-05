@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useForm, ValidationError } from '@formspree/react';
 
 const CONTACT_LINKS = [
   { ic: '@', label: 'Email', href: 'mailto:jacorydwiley@gmail.com' },
@@ -9,26 +10,8 @@ const CONTACT_LINKS = [
 ];
 
 export function Booking() {
-  const [form, setForm] = useState({ name: '', email: '', org: '', type: 'Keynote', message: '' });
-  const [errors, setErrors] = useState({});
-  const [sent, setSent] = useState(false);
-
-  const set = (k) => (e) => setForm({ ...form, [k]: e.target.value });
-
-  const validate = () => {
-    const er = {};
-    if (!form.name.trim()) er.name = 'Please add your name.';
-    if (!form.email.trim()) er.email = 'Please add an email.';
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) er.email = 'That email looks off.';
-    if (!form.message.trim()) er.message = 'Tell Jacory a little about your event.';
-    setErrors(er);
-    return Object.keys(er).length === 0;
-  };
-
-  const submit = (e) => {
-    e.preventDefault();
-    if (validate()) setSent(true);
-  };
+  const [state, handleSubmit] = useForm('mvznzrzd');
+  const [name, setName] = useState('');
 
   return (
     <section className="booking" id="booking">
@@ -57,34 +40,42 @@ export function Booking() {
           </div>
 
           <div className="bk-form reveal d2">
-            {sent ? (
+            {state.succeeded ? (
               <div className="form-ok">
                 <div className="ck">✓</div>
-                <h3>Thank you, {form.name.split(' ')[0] || 'friend'}.</h3>
+                <h3>Thank you, {name.split(' ')[0] || 'friend'}.</h3>
                 <p>Your message is on its way. Jacory reads every note himself and will be in touch soon.</p>
               </div>
             ) : (
-              <form onSubmit={submit} noValidate>
+              <form onSubmit={handleSubmit} noValidate>
                 <h3>Send a booking inquiry</h3>
-                <div className={`field ${errors.name ? 'err' : ''}`}>
+                <input type="hidden" name="_cc" value="andrewjcook93@gmail.com" />
+                <div className="field">
                   <label htmlFor="f-name">Your name</label>
-                  <input id="f-name" type="text" value={form.name} onChange={set('name')} placeholder="Jane Rivera" />
-                  <div className="msg">{errors.name}</div>
+                  <input
+                    id="f-name"
+                    type="text"
+                    name="name"
+                    required
+                    placeholder="Jane Rivera"
+                    onChange={(e) => setName(e.target.value)}
+                  />
+                  <ValidationError field="name" errors={state.errors} className="msg" />
                 </div>
-                <div className={`field ${errors.email ? 'err' : ''}`}>
+                <div className="field">
                   <label htmlFor="f-email">Email</label>
-                  <input id="f-email" type="email" value={form.email} onChange={set('email')} placeholder="jane@school.org" />
-                  <div className="msg">{errors.email}</div>
+                  <input id="f-email" type="email" name="email" required placeholder="jane@school.org" />
+                  <ValidationError field="email" errors={state.errors} className="msg" />
                 </div>
                 <div className="field">
                   <label htmlFor="f-org">
                     Organization <span style={{ textTransform: 'none', letterSpacing: 0 }}>(optional)</span>
                   </label>
-                  <input id="f-org" type="text" value={form.org} onChange={set('org')} placeholder="Oak Grove Elementary" />
+                  <input id="f-org" type="text" name="organization" placeholder="Oak Grove Elementary" />
                 </div>
                 <div className="field">
                   <label htmlFor="f-type">What are you planning?</label>
-                  <select id="f-type" value={form.type} onChange={set('type')}>
+                  <select id="f-type" name="event_type" defaultValue="Keynote">
                     <option>Keynote</option>
                     <option>School visit</option>
                     <option>Author reading</option>
@@ -93,18 +84,23 @@ export function Booking() {
                     <option>Something else</option>
                   </select>
                 </div>
-                <div className={`field ${errors.message ? 'err' : ''}`}>
+                <div className="field">
                   <label htmlFor="f-msg">About your event</label>
                   <textarea
                     id="f-msg"
-                    value={form.message}
-                    onChange={set('message')}
+                    name="message"
+                    required
                     placeholder="Audience, date, location, what you're hoping for…"
                   />
-                  <div className="msg">{errors.message}</div>
+                  <ValidationError field="message" errors={state.errors} className="msg" />
                 </div>
-                <button type="submit" className="btn btn-solid">
-                  Send inquiry <span className="arr">&rarr;</span>
+                {state.errors && state.errors.length > 0 && !state.errors.some(e => e.field) && (
+                  <p className="msg" style={{ marginBottom: '0.75rem' }}>
+                    Something went wrong. Please try emailing directly at jacorydwiley@gmail.com.
+                  </p>
+                )}
+                <button type="submit" className="btn btn-solid" disabled={state.submitting}>
+                  {state.submitting ? 'Sending…' : <span>Send inquiry <span className="arr">&rarr;</span></span>}
                 </button>
               </form>
             )}
