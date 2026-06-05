@@ -21,7 +21,7 @@ export default function Hero() {
       </div>
       <button
         className="scrollcue"
-        onClick={() => scrollToId('about')}
+        onClick={() => scrollToId('books')}
         aria-label="Scroll to read more"
         style={{ background: 'none', border: 'none', cursor: 'pointer' }}
       >
