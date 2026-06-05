@@ -1,4 +1,6 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '../firebase';
 
 export const prefersReduced = () =>
   window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -58,6 +60,25 @@ export function scrollToId(id) {
   const reduce = prefersReduced();
   const y = el.getBoundingClientRect().top + window.scrollY - 10;
   window.scrollTo({ top: y, behavior: reduce ? 'auto' : 'smooth' });
+}
+
+export function useBooks() {
+  const [books, setBooks] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    getDocs(collection(db, 'books'))
+      .then((snap) => {
+        const data = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+        data.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
+        console.log('[useBooks] loaded', data.length, 'books:', data.map((b) => ({ id: b.id, title: b.title, featured: b.featured })));
+        setBooks(data);
+      })
+      .catch((err) => console.error('Failed to load books:', err))
+      .finally(() => setLoading(false));
+  }, []);
+
+  return { books, loading };
 }
 
 export function Placeholder({ label, className = '', style }) {

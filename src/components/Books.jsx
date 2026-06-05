@@ -1,33 +1,15 @@
 import { useState } from 'react';
-import { Placeholder } from '../hooks';
+import { Placeholder, useBooks, useReveals } from '../hooks';
 import BookModal from './BookModal';
 
-const grid = [
-  {
-    title: 'Ballin’ Beyond the Wheels',
-    meta: 'Picture book · Out now',
-    live: true,
-    desc: 'A celebration of every kid who was told to sit on the sidelines — and rolled, ran, or swung their way onto the field anyway.',
-    cover: 'Book cover — Ballin’ Beyond the Wheels',
-  },
-  {
-    title: 'Bigger Than Life',
-    meta: 'Picture book · Coming soon',
-    live: false,
-    desc: 'A new story about how the smallest kid in the room can carry the biggest dream of all.',
-    cover: 'Book cover — Bigger Than Life (coming soon)',
-  },
-  {
-    title: 'I Can’t See, But I’m Still Perfect as Me',
-    meta: 'First chapter book · Coming soon',
-    live: false,
-    desc: 'Jacory’s first chapter book — a young reader discovers that being different was never the same as being less.',
-    cover: 'Book cover — I Can’t See, But I’m Still Perfect as Me (coming soon)',
-  },
-];
-
 export default function Books() {
-  const [modalOpen, setModalOpen] = useState(false);
+  const [modalBook, setModalBook] = useState(null);
+  const { books, loading } = useBooks();
+  useReveals();
+  const featured = books.find((b) => b.featured);
+  const gridBooks = books.filter((b) => !b.featured).sort((a, b) => (a.order ?? 999) - (b.order ?? 999));
+
+  if (loading || !featured) return null;
 
   return (
     <section className="section books" id="books">
@@ -48,18 +30,17 @@ export default function Books() {
 
         <div className="feat">
           <div className="feat-cover reveal">
-            <Placeholder label="Featured cover — Vision to Dream" style={{ position: 'absolute', inset: 0 }} />
+            {featured.coverImage
+              ? <img src={featured.coverImage} alt={featured.cover} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
+              : <Placeholder label={featured.cover} style={{ position: 'absolute', inset: 0 }} />}
           </div>
           <div className="feat-info">
             <span className="badge live reveal"><span className="pip" /> Out now</span>
-            <h3 className="reveal d1">Vision to Dream</h3>
-            <div className="meta reveal d1">Picture book · Ages 4–8</div>
-            <p className="reveal d2">
-              The book that started it all. A tender, joyful story about chasing a dream you can't yet see — and
-              discovering that not being able to see it is exactly how every great dream begins.
-            </p>
+            <h3 className="reveal d1">{featured.title}</h3>
+            <div className="meta reveal d1">{featured.meta}</div>
+            <p className="reveal d2">{featured.desc}</p>
             <div className="reveal d3" style={{ display: 'flex', gap: '14px', flexWrap: 'wrap' }}>
-              <button type="button" className="btn btn-solid" onClick={() => setModalOpen(true)}>
+              <button type="button" className="btn btn-solid" onClick={() => setModalBook(featured)}>
                 Get the book <span className="arr">&rarr;</span>
               </button>
               <button type="button" className="btn btn-ghost">
@@ -70,10 +51,12 @@ export default function Books() {
         </div>
 
         <div className="book-grid">
-          {grid.map((b, i) => (
-            <article className={`book-card reveal d${(i % 3) + 1}`} key={b.title}>
+          {gridBooks.map((b, i) => (
+            <article className={`book-card reveal d${(i % 3) + 1}`} key={b.id}>
               <div className="cover">
-                <Placeholder label={b.cover} style={{ position: 'absolute', inset: 0 }} />
+                {b.coverImage
+                  ? <img src={b.coverImage} alt={b.cover} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
+                  : <Placeholder label={b.cover} style={{ position: 'absolute', inset: 0 }} />}
               </div>
               <span className={`badge ${b.live ? 'live' : 'soon'}`} style={{ marginBottom: '16px' }}>
                 <span className="pip" /> {b.live ? 'Out now' : 'Coming soon'}
@@ -81,14 +64,14 @@ export default function Books() {
               <h4>{b.title}</h4>
               <div className="bmeta">{b.meta}</div>
               <p style={{ color: 'var(--ink-soft)', fontSize: '0.98rem', lineHeight: 1.6, margin: '0 0 16px' }}>{b.desc}</p>
-              <button type="button" className="blink">
+              <button type="button" className="blink" onClick={() => setModalBook(b)}>
                 {b.live ? 'Get the book' : 'Join the waitlist'} <span className="arr">&rarr;</span>
               </button>
             </article>
           ))}
         </div>
       </div>
-      <BookModal open={modalOpen} onClose={() => setModalOpen(false)} />
+      <BookModal open={!!modalBook} onClose={() => setModalBook(null)} book={modalBook} />
     </section>
   );
 }

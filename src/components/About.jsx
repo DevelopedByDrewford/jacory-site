@@ -26,10 +26,17 @@ export function About() {
           <div className="about-portrait reveal">
             <div className="pframe" />
             <div ref={portraitRef} style={{ position: 'absolute', inset: 0 }}>
-              <Placeholder
-                label="Portrait — Jacory, warm natural light, three-quarter, holding one of his books"
+              <div
+                className="ph"
+                data-label="Portrait — Jacory, warm natural light, three-quarter, holding one of his books"
                 style={{ position: 'absolute', inset: '-6% 0' }}
-              />
+              >
+                <img
+                  src="https://photos.smugmug.com/photos/i-6P9dWTm/0/KF7jsWJWKG688RbdbdBnWPKqrCKFDfdnLm2z6tQ3J/L/i-6P9dWTm-L.jpg"
+                  alt="Portrait — Jacory, warm natural light, three-quarter, holding one of his books"
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                />
+              </div>
             </div>
           </div>
 

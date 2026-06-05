@@ -1,38 +1,7 @@
 import { useEffect, useRef } from 'react';
 
-const SECTIONS = [
-  {
-    label: 'Physical',
-    icon: '📖',
-    links: [
-      { name: 'Amazon', href: '#' },
-      { name: 'Barnes & Noble', href: '#' },
-      { name: 'Bookshop.org', href: '#' },
-      { name: 'IndieBound', href: '#' },
-    ],
-  },
-  {
-    label: 'Digital',
-    icon: '📱',
-    links: [
-      { name: 'Kindle', href: '#' },
-      { name: 'Apple Books', href: '#' },
-      { name: 'Google Play Books', href: '#' },
-      { name: 'Nook', href: '#' },
-    ],
-  },
-  {
-    label: 'Audio',
-    icon: '🎧',
-    links: [
-      { name: 'Audible', href: '#' },
-      { name: 'Libro.fm', href: '#' },
-      { name: 'Apple Books Audio', href: '#' },
-    ],
-  },
-];
-
-export default function BookModal({ open, onClose }) {
+export default function BookModal({ open, onClose, book }) {
+  const sections = book?.purchaseSections ?? [];
   const closeRef = useRef(null);
 
   useEffect(() => {
@@ -61,7 +30,7 @@ export default function BookModal({ open, onClose }) {
       >
         <div className="modal-header">
           <div>
-            <div className="modal-eyebrow">Vision to Dream</div>
+            <div className="modal-eyebrow">{book?.title}</div>
             <h2 className="modal-title" id="modal-title">Get the book</h2>
           </div>
           <button
@@ -76,7 +45,7 @@ export default function BookModal({ open, onClose }) {
 
         <div className="modal-body">
           <div className="modal-sections">
-            {SECTIONS.map((s) => (
+            {sections.map((s) => (
               <div className="modal-section" key={s.label}>
                 <div className="modal-section-head">
                   <span className="modal-section-icon" aria-hidden="true">{s.icon}</span>
