@@ -211,7 +211,7 @@ export default function ManageSubmissions() {
   useEffect(() => { fetchPage(); }, [fetchPage]);
 
   return (
-    <main style={{ flex: 1, padding: '40px 48px', overflowY: 'auto', fontFamily: 'system-ui, -apple-system, sans-serif', fontSize: 14, color: '#1a1a1a' }}>
+    <main className="manage-main">
       <h1 style={{ margin: '0 0 6px', fontSize: 22, fontWeight: 700 }}>Submissions</h1>
       <p style={{ margin: '0 0 28px', fontSize: 13, color: '#777' }}>
         Booking inquiries submitted through the contact form.

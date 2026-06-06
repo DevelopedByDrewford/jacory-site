@@ -145,6 +145,7 @@ export function Contact() {
                     <option>Author reading</option>
                     <option>Workshop</option>
                     <option>Virtual session</option>
+                    <option>Interview</option>
                     <option>Something else</option>
                   </select>
                 </div>

@@ -104,7 +104,6 @@ export function useBooks() {
       .then((snap) => {
         const data = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
         data.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
-        console.log('[useBooks] loaded', data.length, 'books:', data.map((b) => ({ id: b.id, title: b.title, featured: b.featured })));
         setBooks(data);
       })
       .catch((err) => console.error('Failed to load books:', err))

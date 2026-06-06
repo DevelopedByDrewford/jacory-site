@@ -209,8 +209,33 @@ export default function ManageBooks() {
     setStatus('Deleted.');
   };
 
+  const pickerBtn = (active) => ({
+    flexShrink: 0,
+    padding: '6px 14px',
+    borderRadius: 20,
+    border: `1px solid ${active ? '#1a1a1a' : '#d0cdc8'}`,
+    background: active ? '#1a1a1a' : '#fff',
+    color: active ? '#fff' : '#555',
+    fontSize: 13,
+    fontWeight: active ? 600 : 400,
+    cursor: 'pointer',
+    whiteSpace: 'nowrap',
+    fontFamily: 'inherit',
+  });
+
   return (
-    <main style={{ flex: 1, padding: '40px 48px', maxWidth: 800, overflowY: 'auto', fontFamily: 'system-ui, -apple-system, sans-serif', fontSize: 14, color: '#1a1a1a' }}>
+    <main className="manage-main" style={{ maxWidth: 800 }}>
+      <div className="manage-books-picker">
+        {books.map((b) => (
+          <button key={b.id} onClick={() => setEditingId(b.id)} style={pickerBtn(editingId === b.id)}>
+            {b.title || 'Untitled'}
+          </button>
+        ))}
+        <button onClick={() => setEditingId(null)} style={pickerBtn(editingId === null)}>
+          + New book
+        </button>
+      </div>
+
       <div style={{ marginBottom: 32, padding: '20px 20px 16px', background: '#fff', border: '1px solid #e0ddd8', borderRadius: 8 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 4 }}>
           <div style={{ fontSize: 13, fontWeight: 600, color: '#1a1a1a' }}>Display order</div>
@@ -284,7 +309,7 @@ export default function ManageBooks() {
         {editingId ? form.title || 'Edit book' : 'New book'}
       </h1>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 32 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(220px, 100%), 1fr))', gap: 16, marginBottom: 32 }}>
         <Field label="Title">
           <input value={form.title} onChange={(e) => setField('title', e.target.value)} />
         </Field>
@@ -313,8 +338,8 @@ export default function ManageBooks() {
         <div key={section.label} style={{ marginBottom: 16, padding: 20, border: '1px solid #e0ddd8', borderRadius: 8, background: '#fff' }}>
           <div style={{ fontWeight: 600, marginBottom: 14, color: '#1a1a1a' }}>{section.icon} {section.label}</div>
           {section.links.map((link, li) => (
-            <div key={li} style={{ display: 'flex', gap: 8, alignItems: 'flex-start', marginBottom: 8 }}>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 4, flex: '0 0 180px' }}>
+            <div key={li} style={{ display: 'flex', flexWrap: 'wrap', gap: 8, alignItems: 'flex-start', marginBottom: 8 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 4, flex: '0 0 min(180px, 100%)' }}>
                 <select
                   value={link.isCustom ? '__custom__' : link.name}
                   onChange={(e) => setLink(si, li, 'select', e.target.value)}

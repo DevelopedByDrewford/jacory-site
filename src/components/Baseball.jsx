@@ -14,8 +14,12 @@ export default function Baseball() {
   const [champAlt, setChampAlt] = useState('');
   const [beepP1, setBeepP1] = useState(BEEP_P1);
   const [beepP2, setBeepP2] = useState(BEEP_P2);
+  const [beepCtaLabel, setBeepCtaLabel] = useState('');
+  const [beepCtaLink, setBeepCtaLink] = useState('');
   const [champP1, setChampP1] = useState(CHAMP_P1);
   const [champP2, setChampP2] = useState(CHAMP_P2);
+  const [champCtaLabel, setChampCtaLabel] = useState('');
+  const [champCtaLink, setChampCtaLink] = useState('');
 
   useEffect(() => {
     getDoc(doc(db, 'config', 'beepBaseball'))
@@ -37,17 +41,21 @@ export default function Baseball() {
     getDoc(doc(db, 'config', 'beepBaseballText'))
       .then((snap) => {
         if (!snap.exists()) return;
-        const { p1, p2 } = snap.data();
+        const { p1, p2, ctaLabel, ctaLink } = snap.data();
         if (p1) setBeepP1(p1);
         if (p2) setBeepP2(p2);
+        if (ctaLabel) setBeepCtaLabel(ctaLabel);
+        if (ctaLink) setBeepCtaLink(ctaLink);
       })
       .catch(() => {});
     getDoc(doc(db, 'config', 'championshipText'))
       .then((snap) => {
         if (!snap.exists()) return;
-        const { p1, p2 } = snap.data();
+        const { p1, p2, ctaLabel, ctaLink } = snap.data();
         if (p1) setChampP1(p1);
         if (p2) setChampP2(p2);
+        if (ctaLabel) setChampCtaLabel(ctaLabel);
+        if (ctaLink) setChampCtaLink(ctaLink);
       })
       .catch(() => {});
   }, []);
@@ -72,6 +80,11 @@ export default function Baseball() {
             <div className="bb-text reveal d2">
               <p>{beepP1}</p>
               <p>{beepP2}</p>
+              {beepCtaLink && (
+                <a href={beepCtaLink} className="btn btn-ghost" target="_blank" rel="noopener noreferrer">
+                  {beepCtaLabel || 'Learn more'} <span className="arr">&rarr;</span>
+                </a>
+              )}
             </div>
             <div className="bb-visual reveal d3">
               {beepUrl ? (
@@ -117,6 +130,11 @@ export default function Baseball() {
             <div className="bb-text reveal d3">
               <p>{champP1}</p>
               <p>{champP2}</p>
+              {champCtaLink && (
+                <a href={champCtaLink} className="btn btn-ghost" target="_blank" rel="noopener noreferrer">
+                  {champCtaLabel || 'Learn more'} <span className="arr">&rarr;</span>
+                </a>
+              )}
             </div>
           </div>
         </div>

@@ -572,13 +572,108 @@ function TextSection({ p1Placeholder, p2Placeholder, collectionName, configKey }
   );
 }
 
+/* ─── Link section ─────────────────────────────────────────────── */
+
+function LinkSection({ configKey }) {
+  const [label, setLabel] = useState('');
+  const [link, setLink] = useState('');
+  const [saved, setSaved] = useState({ label: '', link: '' });
+  const [status, setStatus] = useState('');
+
+  useEffect(() => {
+    getDoc(doc(db, 'config', configKey))
+      .then((snap) => {
+        if (!snap.exists()) return;
+        const { ctaLabel = '', ctaLink = '' } = snap.data();
+        setLabel(ctaLabel);
+        setLink(ctaLink);
+        setSaved({ label: ctaLabel, link: ctaLink });
+      })
+      .catch(() => {});
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const isDirty = label !== saved.label || link !== saved.link;
+
+  const handleSave = async () => {
+    setStatus('');
+    try {
+      await setDoc(doc(db, 'config', configKey), { ctaLabel: label.trim(), ctaLink: link.trim() }, { merge: true });
+      setSaved({ label: label.trim(), link: link.trim() });
+      setStatus('Link saved.');
+    } catch (err) {
+      setStatus(`Error: ${err.message}`);
+    }
+  };
+
+  const handleClear = async () => {
+    if (!window.confirm('Remove the link from this section?')) return;
+    setStatus('');
+    try {
+      await setDoc(doc(db, 'config', configKey), { ctaLabel: '', ctaLink: '' }, { merge: true });
+      setLabel('');
+      setLink('');
+      setSaved({ label: '', link: '' });
+      setStatus('Link removed.');
+    } catch (err) {
+      setStatus(`Error: ${err.message}`);
+    }
+  };
+
+  return (
+    <div>
+      <div style={{ fontWeight: 600, fontSize: 13, color: '#333', marginBottom: 14 }}>Link</div>
+      <div style={{ padding: '20px 24px', background: '#fff', border: '1px solid #e0ddd8', borderRadius: 8 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(220px, 100%), 1fr))', gap: 12, marginBottom: 14 }}>
+          <div>
+            <label style={{ display: 'block', fontSize: 11, fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: '#888', marginBottom: 6 }}>Label</label>
+            <input
+              type="text" placeholder="Learn more" value={label}
+              onChange={(e) => setLabel(e.target.value)}
+              style={{ width: '100%', padding: '8px 12px', border: '1px solid #d0cdc8', borderRadius: 6, fontSize: 13, color: '#1a1a1a', background: '#fff', outline: 'none', boxSizing: 'border-box', fontFamily: 'inherit' }}
+            />
+          </div>
+          <div>
+            <label style={{ display: 'block', fontSize: 11, fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: '#888', marginBottom: 6 }}>URL</label>
+            <input
+              type="url" placeholder="https://…" value={link}
+              onChange={(e) => setLink(e.target.value)}
+              style={{ width: '100%', padding: '8px 12px', border: '1px solid #d0cdc8', borderRadius: 6, fontSize: 13, color: '#1a1a1a', background: '#fff', outline: 'none', boxSizing: 'border-box', fontFamily: 'inherit' }}
+            />
+          </div>
+        </div>
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+          <button
+            onClick={handleSave}
+            disabled={!isDirty || !link.trim()}
+            style={{ padding: '8px 20px', background: '#1a1a1a', color: '#fff', border: 'none', borderRadius: 6, fontWeight: 600, fontSize: 13, cursor: isDirty && link.trim() ? 'pointer' : 'default', opacity: isDirty && link.trim() ? 1 : 0.4 }}
+          >
+            Save
+          </button>
+          {saved.link && (
+            <button onClick={handleClear} style={{ padding: '8px 14px', background: 'none', border: '1px solid #e0ddd8', color: '#888', borderRadius: 6, fontSize: 13, cursor: 'pointer' }}>
+              Remove link
+            </button>
+          )}
+        </div>
+        {status && <p style={{ margin: '12px 0 0', fontSize: 13, color: status.startsWith('Error') ? '#c00' : '#2a7a2a' }}>{status}</p>}
+      </div>
+      {saved.link && (
+        <p style={{ margin: '10px 0 0', fontSize: 12, color: '#888' }}>
+          Live: <a href={saved.link} target="_blank" rel="noopener noreferrer" style={{ color: '#555' }}>{saved.label || 'Learn more'}</a>
+        </p>
+      )}
+    </div>
+  );
+}
+
 /* ─── Page ──────────────────────────────────────────────────────── */
 
 const divider = <div style={{ height: 1, background: '#e0ddd8', margin: '32px 0' }} />;
 
 export default function ManageBaseball() {
   return (
-    <main style={{ flex: 1, padding: '40px 48px', overflowY: 'auto', fontFamily: 'system-ui, -apple-system, sans-serif', fontSize: 14, color: '#1a1a1a' }}>
+    <main className="manage-main">
       <h1 style={{ margin: '0 0 8px', fontSize: 22, fontWeight: 700 }}>Baseball</h1>
       <p style={{ margin: '0 0 40px', fontSize: 13, color: '#777' }}>Manage photos and text for the Beep Baseball and Championship sections.</p>
 
@@ -600,6 +695,10 @@ export default function ManageBaseball() {
         configKey="beepBaseballText"
       />
 
+      {divider}
+
+      <LinkSection configKey="beepBaseballText" />
+
       <div style={{ height: 1, background: '#c8c4be', margin: '48px 0' }} />
 
       {/* ── Championship ── */}
@@ -619,6 +718,10 @@ export default function ManageBaseball() {
         collectionName="championshipDrafts"
         configKey="championshipText"
       />
+
+      {divider}
+
+      <LinkSection configKey="championshipText" />
     </main>
   );
 }

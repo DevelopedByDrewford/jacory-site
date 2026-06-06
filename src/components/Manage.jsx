@@ -1,5 +1,5 @@
 import React, { useState, useEffect, createContext, useContext } from 'react';
-import { Link, Outlet, NavLink, useMatch, useNavigate } from 'react-router-dom';
+import { Link, Outlet, NavLink, useMatch, useNavigate, useLocation } from 'react-router-dom';
 import { collection, getDocs } from 'firebase/firestore';
 import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
 import { db, auth } from '../firebase';
@@ -154,26 +154,34 @@ export function ManageLayout() {
 
   useEffect(() => { if (user) fetchBooks(); }, [user]);
 
+  const location = useLocation();
+  const isSubroute = location.pathname !== '/manage' && location.pathname !== '/manage/';
+
   if (user === undefined) return null;
   if (user === null) return <LoginForm />;
 
   return (
     <ManageBooksCtx.Provider value={{ books, fetchBooks, editingId, setEditingId }}>
       <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', background: '#f8f7f5', fontFamily: 'system-ui, -apple-system, sans-serif', color: '#1a1a1a' }}>
-        <header style={{ background: '#fff', borderBottom: '1px solid #e0ddd8', padding: '0 40px', height: 56, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
+        <header className="manage-header">
           <Link to="/manage" style={{ fontWeight: 700, fontSize: 15, letterSpacing: '0.04em', color: '#1a1a1a', textDecoration: 'none' }}>
             Management Portal
           </Link>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <span style={{ fontSize: 12, color: '#aaa' }}>{user.email}</span>
+            <span className="manage-header-email">{user.email}</span>
             <button onClick={() => signOut(auth)} style={{ fontSize: 13, color: '#666', border: '1px solid #e0ddd8', borderRadius: 6, padding: '6px 12px', cursor: 'pointer', background: '#faf9f7' }}>
               Sign out
             </button>
             <Link to="/" style={{ fontSize: 13, color: '#666', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 5, padding: '6px 12px', border: '1px solid #e0ddd8', borderRadius: 6, background: '#faf9f7' }}>
-              ← Return home
+              ← Home
             </Link>
           </div>
         </header>
+        {isSubroute && (
+          <div className="manage-mobile-nav">
+            <Link to="/manage" style={{ fontSize: 13, color: '#555', textDecoration: 'none' }}>← Portal</Link>
+          </div>
+        )}
         <div className="manage-body">
           <ManageSidebar />
           <div style={{ flex: 1, minWidth: 0, minHeight: 0, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>

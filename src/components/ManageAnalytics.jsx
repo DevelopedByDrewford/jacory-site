@@ -188,7 +188,7 @@ export default function ManageAnalytics() {
   }, [events, bookClicks, rangeDays]);
 
   return (
-    <main style={{ flex: 1, padding: '40px 48px', overflowY: 'auto', fontFamily: 'system-ui, -apple-system, sans-serif', fontSize: 14, color: '#1a1a1a' }}>
+    <main className="manage-main">
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 28 }}>
         <div>
           <h1 style={{ margin: '0 0 6px', fontSize: 22, fontWeight: 700 }}>Analytics</h1>

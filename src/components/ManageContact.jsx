@@ -222,7 +222,7 @@ export default function ManageContact() {
   };
 
   return (
-    <main style={{ flex: 1, padding: '40px 48px', overflowY: 'auto', fontFamily: 'system-ui, -apple-system, sans-serif', fontSize: 14, color: '#1a1a1a' }}>
+    <main className="manage-main">
       <h1 style={{ margin: '0 0 8px', fontSize: 22, fontWeight: 700 }}>Contact Links</h1>
       <p style={{ margin: '0 0 32px', fontSize: 13, color: '#777' }}>
         Manage the links shown in the booking section. Drag to reorder.

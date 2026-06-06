@@ -273,7 +273,7 @@ export default function ManageAbout() {
   };
 
   return (
-    <main style={{ flex: 1, padding: '40px 48px', overflowY: 'auto', fontFamily: 'system-ui, -apple-system, sans-serif', fontSize: 14, color: '#1a1a1a' }}>
+    <main className="manage-main">
       <h1 style={{ margin: '0 0 8px', fontSize: 22, fontWeight: 700 }}>About Portrait</h1>
       <p style={{ margin: '0 0 32px', fontSize: 13, color: '#777' }}>Add image URLs, preview them in context, and choose which one is live.</p>
 

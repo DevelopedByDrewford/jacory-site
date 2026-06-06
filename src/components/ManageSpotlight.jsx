@@ -109,7 +109,7 @@ function MediaSection() {
 
       <div style={{ marginBottom: 24, padding: '20px 24px', background: '#fff', border: '1px solid #e0ddd8', borderRadius: 8 }}>
         <div style={{ fontWeight: 600, fontSize: 13, color: '#333', marginBottom: 16 }}>Add appearance</div>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 12 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(220px, 100%), 1fr))', gap: 12, marginBottom: 12 }}>
           <div>
             <label style={labelStyle}>Title *</label>
             <input type="text" placeholder="Interview with NPR…" value={form.title} onChange={set('title')} style={inputStyle} />
@@ -144,7 +144,7 @@ function MediaSection() {
             <div key={item.id} style={{ background: '#fff', border: '1px solid #e0ddd8', borderRadius: 8, overflow: 'hidden' }}>
               {editingId === item.id ? (
                 <div style={{ padding: '16px 20px' }}>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 12 }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(220px, 100%), 1fr))', gap: 12, marginBottom: 12 }}>
                     <div>
                       <label style={labelStyle}>Title *</label>
                       <input type="text" value={editForm.title} onChange={setEdit('title')} style={inputStyle} />
@@ -290,7 +290,7 @@ function TestimonialsSection() {
 
       <div style={{ marginBottom: 24, padding: '20px 24px', background: '#fff', border: '1px solid #e0ddd8', borderRadius: 8 }}>
         <div style={{ fontWeight: 600, fontSize: 13, color: '#333', marginBottom: 16 }}>Add testimonial</div>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 12 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(220px, 100%), 1fr))', gap: 12, marginBottom: 12 }}>
           <div>
             <label style={labelStyle}>Name *</label>
             <input type="text" placeholder="Jane Doe" value={form.name} onChange={set('name')} style={inputStyle} />
@@ -305,7 +305,7 @@ function TestimonialsSection() {
           <textarea placeholder="Jacory's talk moved every student in the room…" value={form.quote} onChange={set('quote')} rows={3} style={textareaStyle} />
         </div>
         <label style={{ ...labelStyle, marginBottom: 8 }}>Photos (up to 3)</label>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10, marginBottom: 16 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(160px, 100%), 1fr))', gap: 10, marginBottom: 16 }}>
           {[['img1', 'alt1', 'Photo 1'], ['img2', 'alt2', 'Photo 2 (optional)'], ['img3', 'alt3', 'Photo 3 (optional)']].map(([imgKey, altKey, lbl]) => (
             <div key={imgKey}>
               <label style={{ ...labelStyle, color: '#b0aca8', fontSize: 10 }}>{lbl}</label>
@@ -329,7 +329,7 @@ function TestimonialsSection() {
               <div key={item.id} style={{ background: '#fff', border: '1px solid #e0ddd8', borderRadius: 8, overflow: 'hidden' }}>
                 {editingId === item.id ? (
                   <div style={{ padding: '16px 20px' }}>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 12 }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(220px, 100%), 1fr))', gap: 12, marginBottom: 12 }}>
                       <div>
                         <label style={labelStyle}>Name *</label>
                         <input type="text" value={editForm.name} onChange={setEdit('name')} style={inputStyle} />
@@ -344,7 +344,7 @@ function TestimonialsSection() {
                       <textarea value={editForm.quote} onChange={setEdit('quote')} rows={3} style={textareaStyle} />
                     </div>
                     <label style={{ ...labelStyle, marginBottom: 8 }}>Photos (up to 3)</label>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10, marginBottom: 16 }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(160px, 100%), 1fr))', gap: 10, marginBottom: 16 }}>
                       {[['img1', 'alt1', 'Photo 1'], ['img2', 'alt2', 'Photo 2 (optional)'], ['img3', 'alt3', 'Photo 3 (optional)']].map(([imgKey, altKey, lbl]) => (
                         <div key={imgKey}>
                           <label style={{ ...labelStyle, color: '#b0aca8', fontSize: 10 }}>{lbl}</label>
@@ -393,7 +393,7 @@ function TestimonialsSection() {
 /* ── Page ───────────────────────────────────────────────────────── */
 export default function ManageSpotlight() {
   return (
-    <main style={{ flex: 1, padding: '40px 48px', overflowY: 'auto', fontFamily: 'system-ui, -apple-system, sans-serif', fontSize: 14, color: '#1a1a1a' }}>
+    <main className="manage-main">
       <h1 style={{ margin: '0 0 8px', fontSize: 22, fontWeight: 700 }}>Spotlight</h1>
       <p style={{ margin: '0 0 40px', fontSize: 13, color: '#777' }}>Manage media appearances and testimonials for the Spotlight section.</p>
 
