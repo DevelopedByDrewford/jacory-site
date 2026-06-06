@@ -2,9 +2,18 @@ import { useState, useEffect } from 'react';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 
+const BEEP_P1 = 'Beep baseball is a full-contact sport designed for athletes who are blind or visually impaired. The ball beeps. The bases buzz. And every swing is an act of pure faith — you can\'t see the pitch coming, only hear it.';
+const BEEP_P2 = 'For Jacory, the diamond wasn\'t a consolation prize. It was proof. That a body navigating the world without sight could still feel the thrill of a hit, the burn of a sprint, the roar of a crowd responding to something it just witnessed.';
+const CHAMP_P1 = 'In 2022, Jacory\'s team, Indy Edge, took the field at the National Beep Baseball Association Championship — a tournament where blind athletes from across the country compete at the highest level the sport offers.';
+const CHAMP_P2 = 'It\'s the same year he started writing. The same year he stood in front of crowds and told his story for the first time. He has often said that the championship wasn\'t just about baseball — it was the moment he stopped waiting for permission to compete.';
+
 export default function Baseball() {
   const [beepUrl, setBeepUrl] = useState('');
   const [champUrl, setChampUrl] = useState('');
+  const [beepP1, setBeepP1] = useState(BEEP_P1);
+  const [beepP2, setBeepP2] = useState(BEEP_P2);
+  const [champP1, setChampP1] = useState(CHAMP_P1);
+  const [champP2, setChampP2] = useState(CHAMP_P2);
 
   useEffect(() => {
     getDoc(doc(db, 'config', 'beepBaseball'))
@@ -12,6 +21,22 @@ export default function Baseball() {
       .catch(() => {});
     getDoc(doc(db, 'config', 'championship'))
       .then((snap) => { if (snap.exists() && snap.data().activeUrl) setChampUrl(snap.data().activeUrl); })
+      .catch(() => {});
+    getDoc(doc(db, 'config', 'beepBaseballText'))
+      .then((snap) => {
+        if (!snap.exists()) return;
+        const { p1, p2 } = snap.data();
+        if (p1) setBeepP1(p1);
+        if (p2) setBeepP2(p2);
+      })
+      .catch(() => {});
+    getDoc(doc(db, 'config', 'championshipText'))
+      .then((snap) => {
+        if (!snap.exists()) return;
+        const { p1, p2 } = snap.data();
+        if (p1) setChampP1(p1);
+        if (p2) setChampP2(p2);
+      })
       .catch(() => {});
   }, []);
 
@@ -33,16 +58,8 @@ export default function Baseball() {
           </div>
           <div className="bb-body">
             <div className="bb-text reveal d2">
-              <p>
-                <strong>Beep baseball</strong> is a full-contact sport designed for athletes who are blind or visually
-                impaired. The ball beeps. The bases buzz. And every swing is an act of pure faith — you can't see the
-                pitch coming, only hear it.
-              </p>
-              <p>
-                For Jacory, the diamond wasn't a consolation prize. It was proof. That a body navigating the world
-                without sight could still feel the thrill of a hit, the burn of a sprint, the roar of a crowd responding
-                to something it just witnessed.
-              </p>
+              <p>{beepP1}</p>
+              <p>{beepP2}</p>
             </div>
             <div className="bb-visual reveal d3">
               {beepUrl ? (
@@ -86,15 +103,8 @@ export default function Baseball() {
               )}
             </div>
             <div className="bb-text reveal d3">
-              <p>
-                In 2022, Jacory's team, Indy Edge, took the field at the National Beep Baseball Association Championship — a
-                tournament where blind athletes from across the country compete at the highest level the sport offers.
-              </p>
-              <p>
-                It's the same year he started writing. The same year he stood in front of crowds and told his story for
-                the first time. He has often said that the championship wasn't just about baseball — it was the moment
-                he stopped waiting for permission to compete.
-              </p>
+              <p>{champP1}</p>
+              <p>{champP2}</p>
             </div>
           </div>
         </div>
