@@ -7,10 +7,10 @@ const ABOUT_FALLBACK = 'https://photos.smugmug.com/photos/i-6P9dWTm/0/KF7jsWJWKG
 const BAND_FALLBACK = 'https://photos.smugmug.com/photos/i-WFG7MNn/0/L3h8pCJk3STwr7wvtnqQ48MMBjz9RcZ5pZrTsP3pT/XL/i-WFG7MNn-XL.jpg';
 
 const miles = [
-  ['Houston', 'Born and raised in Texas. He lost his sight as a child — and decided early he would never lose his vision.'],
-  ['2022', 'Stepped into the batter’s box of beep baseball and found his swing, his team, and his nerve.'],
-  ['Sam Houston', 'Earned his degree at Sam Houston State University, learning to tell stories that travel further than sight.'],
-  ['Atlanta', 'Now lives in Georgia, writing children’s books for the next generation of dreamers.'],
+  ['Houston', 'Born and raised in Texas. He lost his sight as a child — and decided early he would never lose his vision after discovering Beep Baseball.'],
+  ['SHSU', 'Wrote his first book Vision to Dream while in school.  Started motivational speaking, sharing his story and mindset with audiences for the first time.'],
+  ['2022', "Won the National Beep Baseball Association championship with his team, Indy Edge."],
+  ['Atlanta', 'Now lives in Georgia, he continues to release more children’s books for the next generation of dreamers.'],
 ];
 
 export function About() {
@@ -60,12 +60,12 @@ export function About() {
               Jacory learned something harder, and more useful: how to keep dreaming when you can no longer see the finish line.
             </p>
             <p className="reveal d2">
-              Sport gave him his first answer. In 2022 he found <strong>beep baseball</strong> — the game played by athletes
+              Sport gave him his first answer. He discovered <strong>beep baseball</strong> — the game played by athletes
               who are blind, with a ball that beeps and bases that buzz — and discovered that the diamond didn’t care
-              what he couldn’t see. It only cared whether he’d swing.
+              what he couldn’t see. It only cared whether he’d swing.  In 2022 he won the NBBA championship with his team, Indy Edge.
             </p>
             <p className="reveal d3">
-              He carried that same belief through Sam Houston State University and into the work he does now from Atlanta,
+              He has championed this strength in overcoming challenges through his time at Sam Houston State University and into the work he does now from Atlanta,
               Georgia: <strong>writing books for kids</strong> who are figuring out that being different isn’t the same as being less.
             </p>
             <p className="about-sig reveal d3">Jacory Wiley</p>
