@@ -70,7 +70,7 @@ export function Contact() {
           <div className="bk-pitch">
             <div className="section-eyebrow reveal">
               <span className="eyebrow">Work with Jacory</span>
-              <span className="num">04</span>
+              <span className="num">05</span>
               <span className="ln" />
             </div>
             <h2 className="reveal d1">Let&rsquo;s put your audience in the <em>batter&rsquo;s box</em>.</h2>
