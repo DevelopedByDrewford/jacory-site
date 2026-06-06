@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { collection, doc, getDocs, addDoc, deleteDoc, query, orderBy } from 'firebase/firestore';
+import { collection, doc, getDocs, addDoc, deleteDoc, updateDoc, query, orderBy } from 'firebase/firestore';
 import { db } from '../firebase';
 
 /* ── Shared style helpers ───────────────────────────────────────── */
@@ -33,7 +33,9 @@ const deleteBtn = {
 function MediaSection() {
   const [items, setItems] = useState([]);
   const [status, setStatus] = useState('');
-  const [form, setForm] = useState({ title: '', description: '', imageUrl: '', link: '' });
+  const [form, setForm] = useState({ title: '', description: '', imageUrl: '', imageAlt: '', link: '' });
+  const [editingId, setEditingId] = useState(null);
+  const [editForm, setEditForm] = useState({ title: '', description: '', imageUrl: '', imageAlt: '', link: '' });
 
   const fetchItems = async () => {
     const snap = await getDocs(query(collection(db, 'mediaAppearances'), orderBy('addedAt', 'desc')));
@@ -52,11 +54,12 @@ function MediaSection() {
         title: form.title.trim(),
         description: form.description.trim(),
         imageUrl: form.imageUrl.trim(),
+        imageAlt: form.imageAlt.trim(),
         link: form.link.trim(),
         addedAt: Date.now(),
       });
       await fetchItems();
-      setForm({ title: '', description: '', imageUrl: '', link: '' });
+      setForm({ title: '', description: '', imageUrl: '', imageAlt: '', link: '' });
       setStatus('Appearance added.');
     } catch (err) {
       setStatus(`Error: ${err.message}`);
@@ -69,6 +72,31 @@ function MediaSection() {
       await deleteDoc(doc(db, 'mediaAppearances', item.id));
       await fetchItems();
       setStatus('Deleted.');
+    } catch (err) {
+      setStatus(`Error: ${err.message}`);
+    }
+  };
+
+  const startEdit = (item) => {
+    setEditingId(item.id);
+    setEditForm({ title: item.title || '', description: item.description || '', imageUrl: item.imageUrl || '', imageAlt: item.imageAlt || '', link: item.link || '' });
+  };
+
+  const setEdit = (key) => (e) => setEditForm((f) => ({ ...f, [key]: e.target.value }));
+
+  const handleEditSave = async (item) => {
+    if (!editForm.title.trim()) return;
+    try {
+      await updateDoc(doc(db, 'mediaAppearances', item.id), {
+        title: editForm.title.trim(),
+        description: editForm.description.trim(),
+        imageUrl: editForm.imageUrl.trim(),
+        imageAlt: editForm.imageAlt.trim(),
+        link: editForm.link.trim(),
+      });
+      await fetchItems();
+      setEditingId(null);
+      setStatus('Appearance updated.');
     } catch (err) {
       setStatus(`Error: ${err.message}`);
     }
@@ -95,6 +123,10 @@ function MediaSection() {
           <label style={labelStyle}>Image URL</label>
           <input type="url" placeholder="https://…" value={form.imageUrl} onChange={set('imageUrl')} style={inputStyle} />
         </div>
+        <div style={{ marginBottom: 12 }}>
+          <label style={labelStyle}>Image alt text</label>
+          <input type="text" placeholder="Describe the image for screen readers…" value={form.imageAlt} onChange={set('imageAlt')} style={inputStyle} />
+        </div>
         <div style={{ marginBottom: 16 }}>
           <label style={labelStyle}>Description</label>
           <textarea placeholder="A brief description of the appearance…" value={form.description} onChange={set('description')} rows={2} style={textareaStyle} />
@@ -109,21 +141,57 @@ function MediaSection() {
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           {items.map((item) => (
-            <div key={item.id} style={{ background: '#fff', border: '1px solid #e0ddd8', borderRadius: 8, overflow: 'hidden', display: 'flex' }}>
-              {item.imageUrl && (
-                <div style={{ width: 96, flexShrink: 0, background: '#f0ede8' }}>
-                  <img src={item.imageUrl} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+            <div key={item.id} style={{ background: '#fff', border: '1px solid #e0ddd8', borderRadius: 8, overflow: 'hidden' }}>
+              {editingId === item.id ? (
+                <div style={{ padding: '16px 20px' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 12 }}>
+                    <div>
+                      <label style={labelStyle}>Title *</label>
+                      <input type="text" value={editForm.title} onChange={setEdit('title')} style={inputStyle} />
+                    </div>
+                    <div>
+                      <label style={labelStyle}>Link</label>
+                      <input type="url" value={editForm.link} onChange={setEdit('link')} style={inputStyle} />
+                    </div>
+                  </div>
+                  <div style={{ marginBottom: 12 }}>
+                    <label style={labelStyle}>Image URL</label>
+                    <input type="url" value={editForm.imageUrl} onChange={setEdit('imageUrl')} style={inputStyle} />
+                  </div>
+                  <div style={{ marginBottom: 12 }}>
+                    <label style={labelStyle}>Image alt text</label>
+                    <input type="text" placeholder="Describe the image for screen readers…" value={editForm.imageAlt} onChange={setEdit('imageAlt')} style={inputStyle} />
+                  </div>
+                  <div style={{ marginBottom: 14 }}>
+                    <label style={labelStyle}>Description</label>
+                    <textarea value={editForm.description} onChange={setEdit('description')} rows={2} style={textareaStyle} />
+                  </div>
+                  <div style={{ display: 'flex', gap: 8 }}>
+                    <button onClick={() => handleEditSave(item)} disabled={!editForm.title.trim()} style={addBtn(!!editForm.title.trim())}>Save</button>
+                    <button onClick={() => setEditingId(null)} style={deleteBtn}>Cancel</button>
+                  </div>
+                </div>
+              ) : (
+                <div style={{ display: 'flex' }}>
+                  {item.imageUrl && (
+                    <div style={{ width: 96, flexShrink: 0, background: '#f0ede8' }}>
+                      <img src={item.imageUrl} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+                    </div>
+                  )}
+                  <div style={{ flex: 1, padding: '14px 16px', display: 'flex', alignItems: 'flex-start', gap: 16, minWidth: 0 }}>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontWeight: 600, fontSize: 14, color: '#1a1a1a', marginBottom: 4 }}>{item.title}</div>
+                      {item.description && <div style={{ fontSize: 12, color: '#666', lineHeight: 1.5, marginBottom: 4 }}>{item.description}</div>}
+                      {item.link && <div style={{ fontSize: 11, color: '#aaa', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.link}</div>}
+                      <div style={{ fontSize: 11, color: '#aaa', marginTop: 6 }}>{new Date(item.addedAt).toLocaleDateString()}</div>
+                    </div>
+                    <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
+                      <button onClick={() => startEdit(item)} style={deleteBtn}>Edit</button>
+                      <button onClick={() => handleDelete(item)} style={deleteBtn}>Delete</button>
+                    </div>
+                  </div>
                 </div>
               )}
-              <div style={{ flex: 1, padding: '14px 16px', display: 'flex', alignItems: 'flex-start', gap: 16, minWidth: 0 }}>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontWeight: 600, fontSize: 14, color: '#1a1a1a', marginBottom: 4 }}>{item.title}</div>
-                  {item.description && <div style={{ fontSize: 12, color: '#666', lineHeight: 1.5, marginBottom: 4 }}>{item.description}</div>}
-                  {item.link && <div style={{ fontSize: 11, color: '#aaa', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.link}</div>}
-                  <div style={{ fontSize: 11, color: '#aaa', marginTop: 6 }}>{new Date(item.addedAt).toLocaleDateString()}</div>
-                </div>
-                <button onClick={() => handleDelete(item)} style={deleteBtn}>Delete</button>
-              </div>
             </div>
           ))}
         </div>
@@ -136,7 +204,9 @@ function MediaSection() {
 function TestimonialsSection() {
   const [items, setItems] = useState([]);
   const [status, setStatus] = useState('');
-  const [form, setForm] = useState({ name: '', role: '', quote: '', img1: '', img2: '', img3: '' });
+  const [form, setForm] = useState({ name: '', role: '', quote: '', img1: '', img2: '', img3: '', alt1: '', alt2: '', alt3: '' });
+  const [editingId, setEditingId] = useState(null);
+  const [editForm, setEditForm] = useState({ name: '', role: '', quote: '', img1: '', img2: '', img3: '', alt1: '', alt2: '', alt3: '' });
 
   const fetchItems = async () => {
     const snap = await getDocs(query(collection(db, 'testimonials'), orderBy('addedAt', 'asc')));
@@ -151,16 +221,19 @@ function TestimonialsSection() {
     if (!form.name.trim() || !form.quote.trim()) return;
     setStatus('');
     try {
-      const images = [form.img1, form.img2, form.img3].map((s) => s.trim()).filter(Boolean);
+      const imgList = [form.img1, form.img2, form.img3].map((s) => s.trim());
+      const images = imgList.filter(Boolean);
+      const altTexts = [form.alt1, form.alt2, form.alt3].map((s, i) => imgList[i] ? s.trim() : '').filter((_, i) => !!imgList[i]);
       await addDoc(collection(db, 'testimonials'), {
         name: form.name.trim(),
         role: form.role.trim(),
         quote: form.quote.trim(),
         images,
+        altTexts,
         addedAt: Date.now(),
       });
       await fetchItems();
-      setForm({ name: '', role: '', quote: '', img1: '', img2: '', img3: '' });
+      setForm({ name: '', role: '', quote: '', img1: '', img2: '', img3: '', alt1: '', alt2: '', alt3: '' });
       setStatus('Testimonial added.');
     } catch (err) {
       setStatus(`Error: ${err.message}`);
@@ -173,6 +246,36 @@ function TestimonialsSection() {
       await deleteDoc(doc(db, 'testimonials', item.id));
       await fetchItems();
       setStatus('Deleted.');
+    } catch (err) {
+      setStatus(`Error: ${err.message}`);
+    }
+  };
+
+  const startEdit = (item) => {
+    const imgs = item.images || [];
+    const alts = item.altTexts || [];
+    setEditingId(item.id);
+    setEditForm({ name: item.name || '', role: item.role || '', quote: item.quote || '', img1: imgs[0] || '', img2: imgs[1] || '', img3: imgs[2] || '', alt1: alts[0] || '', alt2: alts[1] || '', alt3: alts[2] || '' });
+  };
+
+  const setEdit = (key) => (e) => setEditForm((f) => ({ ...f, [key]: e.target.value }));
+
+  const handleEditSave = async (item) => {
+    if (!editForm.name.trim() || !editForm.quote.trim()) return;
+    try {
+      const imgList = [editForm.img1, editForm.img2, editForm.img3].map((s) => s.trim());
+      const images = imgList.filter(Boolean);
+      const altTexts = [editForm.alt1, editForm.alt2, editForm.alt3].map((s, i) => imgList[i] ? s.trim() : '').filter((_, i) => !!imgList[i]);
+      await updateDoc(doc(db, 'testimonials', item.id), {
+        name: editForm.name.trim(),
+        role: editForm.role.trim(),
+        quote: editForm.quote.trim(),
+        images,
+        altTexts,
+      });
+      await fetchItems();
+      setEditingId(null);
+      setStatus('Testimonial updated.');
     } catch (err) {
       setStatus(`Error: ${err.message}`);
     }
@@ -203,10 +306,11 @@ function TestimonialsSection() {
         </div>
         <label style={{ ...labelStyle, marginBottom: 8 }}>Photos (up to 3)</label>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10, marginBottom: 16 }}>
-          {[['img1', 'Photo 1'], ['img2', 'Photo 2 (optional)'], ['img3', 'Photo 3 (optional)']].map(([key, lbl]) => (
-            <div key={key}>
+          {[['img1', 'alt1', 'Photo 1'], ['img2', 'alt2', 'Photo 2 (optional)'], ['img3', 'alt3', 'Photo 3 (optional)']].map(([imgKey, altKey, lbl]) => (
+            <div key={imgKey}>
               <label style={{ ...labelStyle, color: '#b0aca8', fontSize: 10 }}>{lbl}</label>
-              <input type="url" placeholder="https://…" value={form[key]} onChange={set(key)} style={inputStyle} />
+              <input type="url" placeholder="https://…" value={form[imgKey]} onChange={set(imgKey)} style={{ ...inputStyle, marginBottom: 6 }} />
+              <input type="text" placeholder="Alt text…" value={form[altKey]} onChange={set(altKey)} style={{ ...inputStyle, fontSize: 12, color: '#555' }} />
             </div>
           ))}
         </div>
@@ -222,23 +326,61 @@ function TestimonialsSection() {
           {items.map((item) => {
             const thumbs = (item.images || []).filter(Boolean);
             return (
-              <div key={item.id} style={{ background: '#fff', border: '1px solid #e0ddd8', borderRadius: 8, padding: '14px 16px', display: 'flex', alignItems: 'flex-start', gap: 16 }}>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontWeight: 600, fontSize: 14, color: '#1a1a1a', marginBottom: 2 }}>
-                    {item.name}
-                    {item.role && <span style={{ fontWeight: 400, color: '#888', fontSize: 12, marginLeft: 8 }}>{item.role}</span>}
-                  </div>
-                  <div style={{ fontSize: 13, color: '#555', lineHeight: 1.55, margin: '6px 0', fontStyle: 'italic' }}>"{item.quote}"</div>
-                  {thumbs.length > 0 && (
-                    <div style={{ display: 'flex', gap: 6, marginTop: 8 }}>
-                      {thumbs.map((url, i) => (
-                        <img key={i} src={url} alt="" style={{ width: 34, height: 34, borderRadius: 4, objectFit: 'cover', border: '1px solid #e0ddd8' }} />
+              <div key={item.id} style={{ background: '#fff', border: '1px solid #e0ddd8', borderRadius: 8, overflow: 'hidden' }}>
+                {editingId === item.id ? (
+                  <div style={{ padding: '16px 20px' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 12 }}>
+                      <div>
+                        <label style={labelStyle}>Name *</label>
+                        <input type="text" value={editForm.name} onChange={setEdit('name')} style={inputStyle} />
+                      </div>
+                      <div>
+                        <label style={labelStyle}>Role / Context</label>
+                        <input type="text" value={editForm.role} onChange={setEdit('role')} style={inputStyle} />
+                      </div>
+                    </div>
+                    <div style={{ marginBottom: 14 }}>
+                      <label style={labelStyle}>Quote *</label>
+                      <textarea value={editForm.quote} onChange={setEdit('quote')} rows={3} style={textareaStyle} />
+                    </div>
+                    <label style={{ ...labelStyle, marginBottom: 8 }}>Photos (up to 3)</label>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10, marginBottom: 16 }}>
+                      {[['img1', 'alt1', 'Photo 1'], ['img2', 'alt2', 'Photo 2 (optional)'], ['img3', 'alt3', 'Photo 3 (optional)']].map(([imgKey, altKey, lbl]) => (
+                        <div key={imgKey}>
+                          <label style={{ ...labelStyle, color: '#b0aca8', fontSize: 10 }}>{lbl}</label>
+                          <input type="url" value={editForm[imgKey]} onChange={setEdit(imgKey)} style={{ ...inputStyle, marginBottom: 6 }} />
+                          <input type="text" placeholder="Alt text…" value={editForm[altKey]} onChange={setEdit(altKey)} style={{ ...inputStyle, fontSize: 12, color: '#555' }} />
+                        </div>
                       ))}
                     </div>
-                  )}
-                  <div style={{ fontSize: 11, color: '#aaa', marginTop: 6 }}>{new Date(item.addedAt).toLocaleDateString()}</div>
-                </div>
-                <button onClick={() => handleDelete(item)} style={deleteBtn}>Delete</button>
+                    <div style={{ display: 'flex', gap: 8 }}>
+                      <button onClick={() => handleEditSave(item)} disabled={!editForm.name.trim() || !editForm.quote.trim()} style={addBtn(!!(editForm.name.trim() && editForm.quote.trim()))}>Save</button>
+                      <button onClick={() => setEditingId(null)} style={deleteBtn}>Cancel</button>
+                    </div>
+                  </div>
+                ) : (
+                  <div style={{ padding: '14px 16px', display: 'flex', alignItems: 'flex-start', gap: 16 }}>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontWeight: 600, fontSize: 14, color: '#1a1a1a', marginBottom: 2 }}>
+                        {item.name}
+                        {item.role && <span style={{ fontWeight: 400, color: '#888', fontSize: 12, marginLeft: 8 }}>{item.role}</span>}
+                      </div>
+                      <div style={{ fontSize: 13, color: '#555', lineHeight: 1.55, margin: '6px 0', fontStyle: 'italic' }}>"{item.quote}"</div>
+                      {thumbs.length > 0 && (
+                        <div style={{ display: 'flex', gap: 6, marginTop: 8 }}>
+                          {thumbs.map((url, i) => (
+                            <img key={i} src={url} alt="" style={{ width: 34, height: 34, borderRadius: 4, objectFit: 'cover', border: '1px solid #e0ddd8' }} />
+                          ))}
+                        </div>
+                      )}
+                      <div style={{ fontSize: 11, color: '#aaa', marginTop: 6 }}>{new Date(item.addedAt).toLocaleDateString()}</div>
+                    </div>
+                    <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
+                      <button onClick={() => startEdit(item)} style={deleteBtn}>Edit</button>
+                      <button onClick={() => handleDelete(item)} style={deleteBtn}>Delete</button>
+                    </div>
+                  </div>
+                )}
               </div>
             );
           })}

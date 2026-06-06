@@ -16,10 +16,16 @@ const miles = [
 export function About() {
   const portraitRef = useParallax(0.08);
   const [aboutUrl, setAboutUrl] = useState(ABOUT_FALLBACK);
+  const [aboutAlt, setAboutAlt] = useState('');
 
   useEffect(() => {
     getDoc(doc(db, 'config', 'about'))
-      .then((snap) => { if (snap.exists() && snap.data().activeUrl) setAboutUrl(snap.data().activeUrl); })
+      .then((snap) => {
+        if (!snap.exists()) return;
+        const { activeUrl, activeAlt } = snap.data();
+        if (activeUrl) setAboutUrl(activeUrl);
+        if (activeAlt) setAboutAlt(activeAlt);
+      })
       .catch(() => {});
   }, []);
   return (
@@ -46,7 +52,7 @@ export function About() {
               >
                 <img
                   src={aboutUrl}
-                  alt="Portrait — Jacory, warm natural light, holding one of his books"
+                  alt={aboutAlt}
                   style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
                 />
               </div>
@@ -88,10 +94,16 @@ export function About() {
 export function QuoteBand() {
   const imgRef = useParallax(0.22);
   const [bandUrl, setBandUrl] = useState(BAND_FALLBACK);
+  const [bandAlt, setBandAlt] = useState('');
 
   useEffect(() => {
     getDoc(doc(db, 'config', 'quoteBand'))
-      .then((snap) => { if (snap.exists() && snap.data().activeUrl) setBandUrl(snap.data().activeUrl); })
+      .then((snap) => {
+        if (!snap.exists()) return;
+        const { activeUrl, activeAlt } = snap.data();
+        if (activeUrl) setBandUrl(activeUrl);
+        if (activeAlt) setBandAlt(activeAlt);
+      })
       .catch(() => {});
   }, []);
 
@@ -100,7 +112,7 @@ export function QuoteBand() {
       <div ref={imgRef} className="band-img">
         <img
           src={bandUrl}
-          alt="Wide cinematic — Jacory mid-swing on the beep baseball field, motion, dust"
+          alt={bandAlt}
           style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
         />
       </div>

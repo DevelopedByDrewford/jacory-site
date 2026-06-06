@@ -13,11 +13,15 @@ const topics = [
 
 export function Speaking() {
   const [speakingUrl, setSpeakingUrl] = useState(FALLBACK_URL);
+  const [speakingAlt, setSpeakingAlt] = useState('');
 
   useEffect(() => {
     getDoc(doc(db, 'config', 'speaking'))
       .then((snap) => {
-        if (snap.exists() && snap.data().activeUrl) setSpeakingUrl(snap.data().activeUrl);
+        if (!snap.exists()) return;
+        const { activeUrl, activeAlt } = snap.data();
+        if (activeUrl) setSpeakingUrl(activeUrl);
+        if (activeAlt) setSpeakingAlt(activeAlt);
       })
       .catch(() => {});
   }, []);
@@ -59,7 +63,7 @@ export function Speaking() {
           <div className="spk-visual reveal d2">
             <img
               src={speakingUrl}
-              alt="Portrait — Jacory speaking on stage, mic in hand, warm light"
+              alt={speakingAlt}
               style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
             />
             <div className="spk-stat">

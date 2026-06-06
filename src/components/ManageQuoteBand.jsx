@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { collection, doc, getDocs, setDoc, addDoc, deleteDoc, getDoc, query, orderBy } from 'firebase/firestore';
+import { collection, doc, getDocs, setDoc, addDoc, deleteDoc, updateDoc, getDoc, query, orderBy } from 'firebase/firestore';
 import { db } from '../firebase';
 
 const VIEWPORTS = {
@@ -135,8 +135,12 @@ export default function ManageQuoteBand() {
   const [images, setImages] = useState([]);
   const [activeUrl, setActiveUrl] = useState('');
   const [urlInput, setUrlInput] = useState('');
+  const [altInput, setAltInput] = useState('');
   const [status, setStatus] = useState('');
   const [previewImg, setPreviewImg] = useState(null);
+  const [editingId, setEditingId] = useState(null);
+  const [editUrl, setEditUrl] = useState('');
+  const [editAlt, setEditAlt] = useState('');
 
   const fetchImages = async () => {
     const snap = await getDocs(query(collection(db, 'quoteBandImages'), orderBy('addedAt', 'desc')));
@@ -155,9 +159,10 @@ export default function ManageQuoteBand() {
     if (!url) return;
     setStatus('');
     try {
-      await addDoc(collection(db, 'quoteBandImages'), { url, addedAt: Date.now() });
+      await addDoc(collection(db, 'quoteBandImages'), { url, altText: altInput.trim(), addedAt: Date.now() });
       await fetchImages();
       setUrlInput('');
+      setAltInput('');
       setStatus('Image added.');
     } catch (err) {
       setStatus(`Error: ${err.message}`);
@@ -167,7 +172,7 @@ export default function ManageQuoteBand() {
   const setLive = async (img) => {
     setStatus('');
     try {
-      await setDoc(doc(db, 'config', 'quoteBand'), { activeUrl: img.url });
+      await setDoc(doc(db, 'config', 'quoteBand'), { activeUrl: img.url, activeAlt: img.altText || '' });
       setActiveUrl(img.url);
       setStatus('Live image updated.');
     } catch (err) {
@@ -180,11 +185,30 @@ export default function ManageQuoteBand() {
     try {
       await deleteDoc(doc(db, 'quoteBandImages', img.id));
       if (activeUrl === img.url) {
-        await setDoc(doc(db, 'config', 'quoteBand'), { activeUrl: '' });
+        await setDoc(doc(db, 'config', 'quoteBand'), { activeUrl: '', activeAlt: '' });
         setActiveUrl('');
       }
       await fetchImages();
       setStatus('Removed.');
+    } catch (err) {
+      setStatus(`Error: ${err.message}`);
+    }
+  };
+
+  const startEdit = (img) => { setEditingId(img.id); setEditUrl(img.url); setEditAlt(img.altText || ''); };
+
+  const handleEditSave = async (img) => {
+    const url = editUrl.trim();
+    if (!url) return;
+    try {
+      await updateDoc(doc(db, 'quoteBandImages', img.id), { url, altText: editAlt.trim() });
+      if (activeUrl === img.url) {
+        await setDoc(doc(db, 'config', 'quoteBand'), { activeUrl: url, activeAlt: editAlt.trim() });
+        setActiveUrl(url);
+      }
+      await fetchImages();
+      setEditingId(null);
+      setStatus('Image updated.');
     } catch (err) {
       setStatus(`Error: ${err.message}`);
     }
@@ -197,18 +221,26 @@ export default function ManageQuoteBand() {
 
       <div style={{ marginBottom: 32, padding: '20px 24px', background: '#fff', border: '1px solid #e0ddd8', borderRadius: 8 }}>
         <div style={{ fontWeight: 600, fontSize: 13, marginBottom: 10 }}>Add image URL</div>
-        <div style={{ display: 'flex', gap: 10 }}>
+        <div style={{ display: 'flex', gap: 10, marginBottom: 10 }}>
           <input
             type="url" placeholder="https://…" value={urlInput}
             onChange={(e) => setUrlInput(e.target.value)}
             onKeyDown={(e) => { if (e.key === 'Enter') handleAdd(); }}
             style={{ flex: 1, padding: '8px 12px', border: '1px solid #d0cdc8', borderRadius: 6, fontSize: 14, color: '#1a1a1a', background: '#fff', outline: 'none' }}
           />
-          <button onClick={handleAdd} disabled={!urlInput.trim()} style={{
-            padding: '8px 20px', background: '#1a1a1a', color: '#fff', border: 'none', borderRadius: 6,
-            fontWeight: 600, fontSize: 13, cursor: urlInput.trim() ? 'pointer' : 'default', opacity: urlInput.trim() ? 1 : 0.4,
-          }}>Add</button>
         </div>
+        <div style={{ marginBottom: 12 }}>
+          <label style={{ display: 'block', fontSize: 11, fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: '#888', marginBottom: 6 }}>Alt text</label>
+          <input
+            type="text" placeholder="Describe the image for screen readers…" value={altInput}
+            onChange={(e) => setAltInput(e.target.value)}
+            style={{ width: '100%', padding: '8px 12px', border: '1px solid #d0cdc8', borderRadius: 6, fontSize: 13, color: '#1a1a1a', background: '#fff', outline: 'none', boxSizing: 'border-box', fontFamily: 'inherit' }}
+          />
+        </div>
+        <button onClick={handleAdd} disabled={!urlInput.trim()} style={{
+          padding: '8px 20px', background: '#1a1a1a', color: '#fff', border: 'none', borderRadius: 6,
+          fontWeight: 600, fontSize: 13, cursor: urlInput.trim() ? 'pointer' : 'default', opacity: urlInput.trim() ? 1 : 0.4,
+        }}>Add</button>
       </div>
 
       {status && <p style={{ margin: '0 0 20px', fontSize: 13, color: status.startsWith('Error') ? '#c00' : '#2a7a2a' }}>{status}</p>}
@@ -244,14 +276,41 @@ export default function ManageQuoteBand() {
                   >✕</button>
                 </div>
                 <div style={{ padding: '10px 12px' }}>
-                  <div style={{ fontSize: 11, color: '#aaa', marginBottom: 8 }}>{new Date(img.addedAt).toLocaleDateString()}</div>
-                  <button onClick={() => setLive(img)} disabled={isLive} style={{
-                    width: '100%', padding: '7px 0',
-                    background: isLive ? '#f0ede8' : '#1a1a1a',
-                    color: isLive ? '#888' : '#fff',
-                    border: 'none', borderRadius: 5,
-                    cursor: isLive ? 'default' : 'pointer', fontWeight: 600, fontSize: 12,
-                  }}>{isLive ? 'Live' : 'Set as live'}</button>
+                  {editingId === img.id ? (
+                    <>
+                      <input
+                        type="url" value={editUrl} onChange={(e) => setEditUrl(e.target.value)}
+                        style={{ width: '100%', padding: '6px 10px', border: '1px solid #d0cdc8', borderRadius: 5, fontSize: 12, marginBottom: 8, boxSizing: 'border-box', fontFamily: 'inherit' }}
+                      />
+                      <input
+                        type="text" placeholder="Alt text…" value={editAlt} onChange={(e) => setEditAlt(e.target.value)}
+                        style={{ width: '100%', padding: '6px 10px', border: '1px solid #d0cdc8', borderRadius: 5, fontSize: 12, marginBottom: 8, boxSizing: 'border-box', fontFamily: 'inherit' }}
+                      />
+                      <div style={{ display: 'flex', gap: 6 }}>
+                        <button onClick={() => handleEditSave(img)} style={{ flex: 1, padding: '6px 0', background: '#1a1a1a', color: '#fff', border: 'none', borderRadius: 5, fontWeight: 600, fontSize: 12, cursor: 'pointer' }}>Save</button>
+                        <button onClick={() => setEditingId(null)} style={{ flex: 1, padding: '6px 0', background: 'none', border: '1px solid #e0ddd8', color: '#888', borderRadius: 5, fontSize: 12, cursor: 'pointer' }}>Cancel</button>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div style={{ fontSize: 11, color: '#aaa', marginBottom: 4 }}>{new Date(img.addedAt).toLocaleDateString()}</div>
+                      {img.altText ? (
+                        <div style={{ fontSize: 11, color: '#777', marginBottom: 8, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={img.altText}>{img.altText}</div>
+                      ) : (
+                        <div style={{ fontSize: 11, color: '#bbb', fontStyle: 'italic', marginBottom: 8 }}>No alt text</div>
+                      )}
+                      <div style={{ display: 'flex', gap: 6 }}>
+                        <button onClick={() => setLive(img)} disabled={isLive} style={{
+                          flex: 1, padding: '7px 0',
+                          background: isLive ? '#f0ede8' : '#1a1a1a',
+                          color: isLive ? '#888' : '#fff',
+                          border: 'none', borderRadius: 5,
+                          cursor: isLive ? 'default' : 'pointer', fontWeight: 600, fontSize: 12,
+                        }}>{isLive ? 'Live' : 'Set as live'}</button>
+                        <button onClick={() => startEdit(img)} style={{ padding: '7px 10px', background: 'none', border: '1px solid #e0ddd8', color: '#888', borderRadius: 5, fontSize: 12, cursor: 'pointer' }}>Edit</button>
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
             );

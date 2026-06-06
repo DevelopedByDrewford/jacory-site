@@ -8,11 +8,15 @@ const FALLBACK_URL = 'https://photos.smugmug.com/photos/i-sjLJSDw/0/NHTsmXxrTrLW
 export default function Hero() {
   const imgRef = useParallax(0.16);
   const [heroUrl, setHeroUrl] = useState(FALLBACK_URL);
+  const [heroAlt, setHeroAlt] = useState('');
 
   useEffect(() => {
     getDoc(doc(db, 'config', 'hero'))
       .then((snap) => {
-        if (snap.exists() && snap.data().activeUrl) setHeroUrl(snap.data().activeUrl);
+        if (!snap.exists()) return;
+        const { activeUrl, activeAlt } = snap.data();
+        if (activeUrl) setHeroUrl(activeUrl);
+        if (activeAlt) setHeroAlt(activeAlt);
       })
       .catch(() => {});
   }, []);
@@ -22,7 +26,7 @@ export default function Hero() {
       <div ref={imgRef} className="hero-img">
         <img
           src={heroUrl}
-          alt="Full-bleed atmospheric portrait — Jacory at the plate in beep baseball, dusk light"
+          alt={heroAlt}
           style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
         />
       </div>

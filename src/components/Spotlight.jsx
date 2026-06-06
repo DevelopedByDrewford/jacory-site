@@ -3,7 +3,7 @@ import { collection, getDocs, query, orderBy } from 'firebase/firestore';
 import { db } from '../firebase';
 
 /* ── Image modal ────────────────────────────────────────────────── */
-function ImageModal({ images, startIdx, onClose }) {
+function ImageModal({ images, altTexts = [], startIdx, onClose }) {
   const [cur, setCur] = useState(startIdx);
   const backdropRef = useRef();
 
@@ -29,7 +29,7 @@ function ImageModal({ images, startIdx, onClose }) {
     >
       <button className="spl-modal-close" onClick={onClose} aria-label="Close">✕</button>
       <div className="spl-modal-img-wrap">
-        <img src={images[cur]} alt="" className="spl-modal-img" />
+        <img src={images[cur]} alt={altTexts[cur] || ''} className="spl-modal-img" />
       </div>
       {images.length > 1 && (
         <>
@@ -47,10 +47,11 @@ function ImageModal({ images, startIdx, onClose }) {
 }
 
 /* ── Image pile ─────────────────────────────────────────────────── */
-function ImagePile({ images }) {
+function ImagePile({ images, altTexts = [] }) {
   const [modalOpen, setModalOpen] = useState(false);
   const count = Math.min(images.length, 3);
   const visible = images.slice(0, count);
+  const visibleAlts = altTexts.slice(0, count);
 
   return (
     <>
@@ -65,11 +66,11 @@ function ImagePile({ images }) {
       >
         {visible.map((url, i) => (
           <div key={i} className="spl-pile-img">
-            <img src={url} alt="" />
+            <img src={url} alt={visibleAlts[i] || ''} />
           </div>
         ))}
       </div>
-      {modalOpen && <ImageModal images={visible} startIdx={count - 1} onClose={() => setModalOpen(false)} />}
+      {modalOpen && <ImageModal images={visible} altTexts={visibleAlts} startIdx={count - 1} onClose={() => setModalOpen(false)} />}
     </>
   );
 }
@@ -77,6 +78,7 @@ function ImagePile({ images }) {
 /* ── Testimonial card ───────────────────────────────────────────── */
 function TestimonialCard({ item, delay }) {
   const images = (item.images || []).filter(Boolean);
+  const altTexts = item.altTexts || [];
 
   return (
     <div className={`spl-card reveal d${delay}`}>
@@ -84,7 +86,7 @@ function TestimonialCard({ item, delay }) {
         <span className="spl-qmark">"</span>{item.quote}<span className="spl-qmark">"</span>
       </p>
       <div className="spl-card-foot">
-        {images.length > 0 && <ImagePile images={images} />}
+        {images.length > 0 && <ImagePile images={images} altTexts={altTexts} />}
         <div className="spl-author">
           <div className="spl-author-name">{item.name}</div>
           {item.role && <div className="spl-author-role">{item.role}</div>}
@@ -105,7 +107,7 @@ function MediaCarousel({ items }) {
       <div className="spl-slide reveal">
         {item.imageUrl && (
           <div className="spl-slide-img">
-            <img src={item.imageUrl} alt={item.title} />
+            <img src={item.imageUrl} alt={item.imageAlt || ''} />
           </div>
         )}
         <div className="spl-slide-body">

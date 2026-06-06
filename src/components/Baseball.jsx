@@ -9,7 +9,9 @@ const CHAMP_P2 = 'It\'s the same year he started writing. The same year he stood
 
 export default function Baseball() {
   const [beepUrl, setBeepUrl] = useState('');
+  const [beepAlt, setBeepAlt] = useState('');
   const [champUrl, setChampUrl] = useState('');
+  const [champAlt, setChampAlt] = useState('');
   const [beepP1, setBeepP1] = useState(BEEP_P1);
   const [beepP2, setBeepP2] = useState(BEEP_P2);
   const [champP1, setChampP1] = useState(CHAMP_P1);
@@ -17,10 +19,20 @@ export default function Baseball() {
 
   useEffect(() => {
     getDoc(doc(db, 'config', 'beepBaseball'))
-      .then((snap) => { if (snap.exists() && snap.data().activeUrl) setBeepUrl(snap.data().activeUrl); })
+      .then((snap) => {
+        if (!snap.exists()) return;
+        const { activeUrl, activeAlt } = snap.data();
+        if (activeUrl) setBeepUrl(activeUrl);
+        if (activeAlt) setBeepAlt(activeAlt);
+      })
       .catch(() => {});
     getDoc(doc(db, 'config', 'championship'))
-      .then((snap) => { if (snap.exists() && snap.data().activeUrl) setChampUrl(snap.data().activeUrl); })
+      .then((snap) => {
+        if (!snap.exists()) return;
+        const { activeUrl, activeAlt } = snap.data();
+        if (activeUrl) setChampUrl(activeUrl);
+        if (activeAlt) setChampAlt(activeAlt);
+      })
       .catch(() => {});
     getDoc(doc(db, 'config', 'beepBaseballText'))
       .then((snap) => {
@@ -65,7 +77,7 @@ export default function Baseball() {
               {beepUrl ? (
                 <img
                   src={beepUrl}
-                  alt="Beep baseball — player mid-swing"
+                  alt={beepAlt}
                   style={{ width: '100%', aspectRatio: '4 / 3', objectFit: 'cover', display: 'block' }}
                 />
               ) : (
@@ -91,7 +103,7 @@ export default function Baseball() {
               {champUrl ? (
                 <img
                   src={champUrl}
-                  alt="2022 Championship"
+                  alt={champAlt}
                   style={{ width: '100%', aspectRatio: '4 / 3', objectFit: 'cover', display: 'block' }}
                 />
               ) : (

@@ -159,7 +159,7 @@ export function ManageLayout() {
 
   return (
     <ManageBooksCtx.Provider value={{ books, fetchBooks, editingId, setEditingId }}>
-      <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', background: '#f8f7f5', fontFamily: 'system-ui, -apple-system, sans-serif', color: '#1a1a1a' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', background: '#f8f7f5', fontFamily: 'system-ui, -apple-system, sans-serif', color: '#1a1a1a' }}>
         <header style={{ background: '#fff', borderBottom: '1px solid #e0ddd8', padding: '0 40px', height: 56, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
           <Link to="/manage" style={{ fontWeight: 700, fontSize: 15, letterSpacing: '0.04em', color: '#1a1a1a', textDecoration: 'none' }}>
             Management Portal
@@ -176,7 +176,7 @@ export function ManageLayout() {
         </header>
         <div className="manage-body">
           <ManageSidebar />
-          <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column' }}>
+          <div style={{ flex: 1, minWidth: 0, minHeight: 0, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
             <Outlet />
           </div>
         </div>

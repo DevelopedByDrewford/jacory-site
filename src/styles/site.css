@@ -261,7 +261,7 @@ img { display: block; max-width: 100%; }
 /* =========================================================
    SPEAKING
    ========================================================= */
-.speaking { background: var(--bg); }
+.speaking { background: var(--bg-deep); }
 .spk-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 90px; align-items: center; }
 .spk-title { font-family: var(--serif); font-weight: 300; font-size: clamp(2.2rem, 4vw, 3.5rem); line-height: 1.1; margin: 0 0 36px; letter-spacing: -0.01em; padding-bottom: 6px; max-width: 14ch; text-wrap: balance; }
 .spk-title em { font-style: italic; color: var(--gold); }
@@ -427,7 +427,7 @@ img { display: block; max-width: 100%; }
 /* =========================================================
    SPOTLIGHT
    ========================================================= */
-.spotlight { background: var(--bg); }
+.spotlight { background: var(--bg-deep); }
 .spl-block { margin-bottom: 100px; }
 .spl-block:last-child { margin-bottom: 0; }
 .spl-block--divided { padding-top: 100px; border-top: 1px solid var(--line); }
@@ -562,7 +562,7 @@ img { display: block; max-width: 100%; }
 /* =========================================================
    BASEBALL
    ========================================================= */
-.baseball { background: var(--bg-deep); }
+.baseball { background: var(--bg); }
 .bb-block { margin-bottom: 110px; }
 .bb-block:last-child { margin-bottom: 0; }
 .bb-header { margin-bottom: 52px; }
