@@ -10,6 +10,7 @@ import { Speaking } from './components/Speaking';
 import { Booking } from './components/Booking';
 import Manage, { ManageLayout } from './components/Manage';
 import ManageBooks from './components/ManageBooks';
+import ManageHero from './components/ManageHero';
 import CmdK from './components/CmdK';
 
 function Site() {
@@ -37,6 +38,7 @@ export default function App() {
         <Route path="/" element={<Site />} />
         <Route path="/manage" element={<ManageLayout />}>
           <Route index element={<Manage />} />
+          <Route path="hero" element={<ManageHero />} />
           <Route path="books" element={<ManageBooks />} />
         </Route>
       </Routes>

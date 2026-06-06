@@ -6,6 +6,12 @@ import { db, auth } from '../firebase';
 
 const SECTIONS = [
   {
+    label: 'Hero',
+    description: 'Upload and set the background image shown in the hero section.',
+    icon: '🖼️',
+    href: '/manage/hero',
+  },
+  {
     label: 'Books',
     description: 'Add, edit, and manage book listings and purchase links.',
     icon: '📚',
@@ -33,6 +39,12 @@ function ManageSidebar() {
   return (
     <aside style={{ width: 240, borderRight: '1px solid #e0ddd8', flexShrink: 0, background: '#fff', display: 'flex', flexDirection: 'column' }}>
       <div style={{ padding: '8px 0' }}>
+        <NavLink
+          to="/manage/hero"
+          style={({ isActive }) => navLinkStyle(isActive)}
+        >
+          Hero
+        </NavLink>
         <NavLink
           to="/manage/books"
           style={({ isActive }) => navLinkStyle(isActive)}
