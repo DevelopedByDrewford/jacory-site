@@ -10,6 +10,7 @@ const CUSTOMIZE = [
   { label: 'Books',      description: 'Add, edit, and manage book listings and purchase links.',  icon: '📚', href: '/manage/books' },
   { label: 'Speaking',   description: 'Set the portrait photo used in the speaking section.',     icon: '🎤', href: '/manage/speaking' },
   { label: 'About',      description: 'Set the portrait photo used in the about section.',        icon: '🧑', href: '/manage/about' },
+  { label: 'Baseball',   description: 'Manage photos for the Beep Baseball and Championship sections.', icon: '⚾', href: '/manage/baseball' },
   { label: 'Quote Band', description: 'Set the cinematic image behind the quote strip.',          icon: '🎞️', href: '/manage/quoteband' },
   { label: 'Contact',    description: 'Add, edit, and reorder the contact links.',                icon: '🔗', href: '/manage/contact' },
 ];

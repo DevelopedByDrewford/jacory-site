@@ -2,9 +2,10 @@ import { useState, useEffect } from 'react';
 import { scrollToId } from '../hooks';
 
 const links = [
-  ['books', 'Books'],
-  ['speaking', 'Speaking'],
-  ['about', 'About'],
+  { id: 'books', label: 'Books' },
+  { id: 'speaking', label: 'Speaking' },
+  { id: 'about', label: 'About' },
+  { id: 'baseball', label: 'Baseball' },
 ];
 
 export default function Nav() {
@@ -31,9 +32,9 @@ export default function Nav() {
           Jacory Wiley<span className="dot">.</span>
         </button>
         <div className="nav-links">
-          {links.map(([id, label]) => (
-            <button key={id} className="link" onClick={() => go(id)}>{label}</button>
-          ))}
+          {links.map((link) =>
+            <button key={link.id} className="link" onClick={() => go(link.id)}>{link.label}</button>
+          )}
           <button className="nav-cta" onClick={() => go('booking')}>Work with Jacory</button>
         </div>
         <button
@@ -47,9 +48,18 @@ export default function Nav() {
       </nav>
 
       <div className={`mobile-menu ${open ? 'open' : ''}`} aria-hidden={!open}>
-        {links.map(([id, label]) => (
-          <button key={id} onClick={() => go(id)}>{label}</button>
-        ))}
+        {links.map((link) =>
+          link.sub ? (
+            <div key={link.id} className="mobile-bb">
+              <button onClick={() => go(link.id)}>{link.label}</button>
+              {link.sub.map((s) => (
+                <button key={s.id} className="mobile-bb-sub" onClick={() => go(s.id)}>{s.label}</button>
+              ))}
+            </div>
+          ) : (
+            <button key={link.id} onClick={() => go(link.id)}>{link.label}</button>
+          )
+        )}
         <button onClick={() => go('booking')} style={{ color: 'var(--gold)' }}>Work with Jacory</button>
       </div>
     </>

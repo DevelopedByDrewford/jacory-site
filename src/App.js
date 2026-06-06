@@ -17,6 +17,8 @@ import ManageQuoteBand from './components/ManageQuoteBand';
 import ManageContact from './components/ManageContact';
 import ManageSubmissions from './components/ManageSubmissions';
 import ManageAnalytics from './components/ManageAnalytics';
+import ManageBaseball from './components/ManageBaseball';
+import Baseball from './components/Baseball';
 import CmdK from './components/CmdK';
 
 function Site() {
@@ -30,6 +32,7 @@ function Site() {
         <Books />
         <Speaking />
         <About />
+        <Baseball />
         <QuoteBand />
         <Contact />
       </main>
@@ -58,6 +61,7 @@ export default function App() {
           <Route path="contact" element={<ManageContact />} />
           <Route path="submissions" element={<ManageSubmissions />} />
           <Route path="analytics" element={<ManageAnalytics />} />
+          <Route path="baseball" element={<ManageBaseball />} />
         </Route>
       </Routes>
       <CmdK />

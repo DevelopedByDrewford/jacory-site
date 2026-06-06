@@ -92,6 +92,30 @@ img { display: block; max-width: 100%; }
 .nav-burger { display: none; background: none; border: none; cursor: pointer; flex-direction: column; gap: 5px; padding: 8px; }
 .nav-burger span { width: 24px; height: 2px; background: var(--ink); transition: all 0.3s var(--ease); }
 
+.nav-dropdown { position: relative; }
+.nav-caret { display: inline-block; margin-left: 5px; vertical-align: middle; transition: transform 0.3s var(--ease); }
+.nav-dropdown:hover .nav-caret { transform: rotate(180deg); }
+.nav-drop-menu {
+  position: absolute; top: calc(100% + 14px); left: 50%;
+  transform: translateX(-50%) translateY(-6px);
+  background: var(--bg-raise); border: 1px solid var(--line);
+  min-width: 190px; padding: 8px;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.25s var(--ease), transform 0.25s var(--ease);
+  backdrop-filter: blur(12px);
+}
+.nav-dropdown:hover .nav-drop-menu {
+  opacity: 1; pointer-events: auto;
+  transform: translateX(-50%) translateY(0);
+}
+.nav-drop-item {
+  display: block; width: 100%; background: none; border: none; cursor: pointer;
+  font-family: var(--sans); font-size: 0.86rem; color: var(--ink-soft);
+  padding: 10px 16px; text-align: left; border-radius: 4px;
+  transition: color 0.2s var(--ease), background 0.2s var(--ease);
+}
+.nav-drop-item:hover { color: var(--gold); background: var(--gold-glow); }
+
 .mobile-menu {
   position: fixed; inset: 0; z-index: 99;
   background: rgba(16, 13, 10, 0.97);
@@ -105,6 +129,8 @@ img { display: block; max-width: 100%; }
   font-family: var(--serif); font-size: 2.4rem; color: var(--ink); padding: 12px;
 }
 .mobile-menu button:hover { color: var(--gold); }
+.mobile-bb { display: flex; flex-direction: column; align-items: center; }
+.mobile-bb-sub { font-size: 1.5rem !important; color: var(--muted) !important; padding: 6px 12px !important; }
 
 /* =========================================================
    BUTTONS
@@ -399,6 +425,32 @@ img { display: block; max-width: 100%; }
 }
 
 /* =========================================================
+   BASEBALL
+   ========================================================= */
+.baseball { background: var(--bg-deep); }
+.bb-block { margin-bottom: 110px; }
+.bb-block:last-child { margin-bottom: 0; }
+.bb-header { margin-bottom: 52px; }
+.bb-sub-eyebrow {
+  font-family: var(--sans); font-weight: 600; font-size: 0.72rem;
+  letter-spacing: 0.28em; text-transform: uppercase; color: var(--muted);
+  margin: 0 0 16px;
+}
+.bb-title {
+  font-family: var(--serif); font-weight: 300;
+  font-size: clamp(1.8rem, 3.2vw, 2.8rem);
+  line-height: 1.15; letter-spacing: -0.01em;
+  margin: 0; color: var(--ink); text-wrap: balance;
+}
+.bb-title em { font-style: italic; color: var(--gold); }
+.bb-body { display: grid; grid-template-columns: 1fr 1fr; gap: 72px; align-items: center; }
+.bb-body--flip { direction: rtl; }
+.bb-body--flip > * { direction: ltr; }
+.bb-text p { color: var(--ink-soft); font-size: 1.08rem; line-height: 1.75; margin: 0 0 22px; max-width: 50ch; }
+.bb-text p:last-child { margin-bottom: 0; }
+.bb-text p strong { color: var(--ink); font-weight: 500; }
+
+/* =========================================================
    RESPONSIVE
    ========================================================= */
 @media (max-width: 1080px) {
@@ -410,6 +462,8 @@ img { display: block; max-width: 100%; }
   .miles { grid-template-columns: repeat(2, 1fr); gap: 0; }
   .mile { padding-bottom: 30px; }
   .mile:nth-child(2) { border-right: none; }
+  .bb-body { grid-template-columns: 1fr; gap: 40px; }
+  .bb-body--flip { direction: ltr; }
 }
 @media (max-width: 760px) {
   .nav, .nav.solid { padding: 18px 22px; }
