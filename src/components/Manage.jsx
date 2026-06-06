@@ -3,6 +3,7 @@ import { Link, Outlet, NavLink, useMatch, useNavigate } from 'react-router-dom';
 import { collection, getDocs } from 'firebase/firestore';
 import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
 import { db, auth } from '../firebase';
+import './Manage.css';
 
 const CUSTOMIZE = [
   { label: 'Hero',       description: 'Set the full-bleed background image in the hero section.', icon: '🖼️', href: '/manage/hero' },
@@ -49,13 +50,30 @@ function ManageSidebar() {
   };
 
   return (
-    <aside style={{ width: 220, borderRight: '1px solid #e0ddd8', flexShrink: 0, background: '#fff', display: 'flex', flexDirection: 'column' }}>
+    <aside className="manage-sidebar">
       <div style={{ padding: '0 0 8px' }}>
         <SidebarLabel first>Customize</SidebarLabel>
         {CUSTOMIZE.map(({ label, href }) => (
-          <NavLink key={href} to={href} style={({ isActive }) => navLinkStyle(isActive)}>
-            {label}
-          </NavLink>
+          <React.Fragment key={href}>
+            <NavLink to={href} style={({ isActive }) => navLinkStyle(isActive)}>
+              {label}
+            </NavLink>
+            {href === '/manage/books' && onBooks && (
+              <div style={{ borderBottom: '1px solid #e0ddd8', paddingBottom: 4, marginBottom: 4 }}>
+                {books.map((b) => (
+                  <button key={b.id} onClick={() => handleSelect(b)} style={sidebarSubItemBtn(editingId === b.id)}>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{b.title}</span>
+                      {b.featured && <span style={{ fontSize: 10, color: '#888', flexShrink: 0 }}>★</span>}
+                    </span>
+                  </button>
+                ))}
+                <button onClick={handleNew} style={{ ...sidebarSubItemBtn(!editingId && editingId !== undefined), color: '#666' }}>
+                  + New book
+                </button>
+              </div>
+            )}
+          </React.Fragment>
         ))}
 
         <SidebarLabel>Reports</SidebarLabel>
@@ -65,22 +83,6 @@ function ManageSidebar() {
           </NavLink>
         ))}
       </div>
-
-      {onBooks && (
-        <div style={{ flex: 1, overflowY: 'auto', borderTop: '1px solid #e0ddd8', padding: '8px 0' }}>
-          {books.map((b) => (
-            <button key={b.id} onClick={() => handleSelect(b)} style={sidebarItemBtn(editingId === b.id)}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{b.title}</span>
-                {b.featured && <span style={{ fontSize: 10, color: '#888', flexShrink: 0 }}>★</span>}
-              </span>
-            </button>
-          ))}
-          <button onClick={handleNew} style={{ ...sidebarItemBtn(!editingId && editingId !== undefined), color: '#666' }}>
-            + New book
-          </button>
-        </div>
-      )}
     </aside>
   );
 }
@@ -170,7 +172,7 @@ export function ManageLayout() {
             </Link>
           </div>
         </header>
-        <div style={{ flex: 1, display: 'flex', minHeight: 0 }}>
+        <div className="manage-body">
           <ManageSidebar />
           <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column' }}>
             <Outlet />
@@ -183,21 +185,15 @@ export function ManageLayout() {
 
 function SectionGrid({ sections }) {
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 14 }}>
+    <div className="manage-grid">
       {sections.map((s) => (
-        <Link
-          key={s.href}
-          to={s.href}
-          style={{ display: 'flex', flexDirection: 'column', gap: 12, padding: '24px 22px', background: '#fff', border: '1px solid #e0ddd8', borderRadius: 10, textDecoration: 'none', color: 'inherit', transition: 'box-shadow 0.2s, border-color 0.2s' }}
-          onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#1a1a1a'; e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.08)'; }}
-          onMouseLeave={(e) => { e.currentTarget.style.borderColor = '#e0ddd8'; e.currentTarget.style.boxShadow = 'none'; }}
-        >
-          <span style={{ fontSize: 26 }}>{s.icon}</span>
-          <div>
-            <div style={{ fontWeight: 600, fontSize: 14, marginBottom: 4 }}>{s.label}</div>
-            <div style={{ fontSize: 12, color: '#888', lineHeight: 1.5 }}>{s.description}</div>
+        <Link key={s.href} to={s.href} className="manage-card">
+          <span className="manage-card-icon">{s.icon}</span>
+          <div className="manage-card-text">
+            <div className="manage-card-label">{s.label}</div>
+            <div className="manage-card-desc">{s.description}</div>
           </div>
-          <div style={{ marginTop: 'auto', fontSize: 12, color: '#bbb', paddingTop: 6 }}>Open →</div>
+          <span className="manage-card-arrow">→</span>
         </Link>
       ))}
     </div>
@@ -206,17 +202,17 @@ function SectionGrid({ sections }) {
 
 export default function ManagePortal() {
   return (
-    <div style={{ padding: '48px 40px', maxWidth: 900, margin: '0 auto' }}>
-      <h1 style={{ margin: '0 0 6px', fontSize: 26, fontWeight: 700, color: '#1a1a1a' }}>Management Portal</h1>
-      <p style={{ margin: '0 0 40px', fontSize: 14, color: '#777' }}>Select a section to manage.</p>
+    <div className="manage-portal">
+      <h1 className="manage-portal-heading">Portal</h1>
+      <p className="manage-portal-sub">Select a section to manage.</p>
 
-      <div style={{ marginBottom: 36 }}>
-        <div style={indexGroupLabel}>Customize</div>
+      <div className="manage-group">
+        <div className="manage-group-label">Customize</div>
         <SectionGrid sections={CUSTOMIZE} />
       </div>
 
-      <div>
-        <div style={indexGroupLabel}>Reports</div>
+      <div className="manage-group">
+        <div className="manage-group-label">Reports</div>
         <SectionGrid sections={REPORTS} />
       </div>
     </div>
@@ -249,8 +245,10 @@ const sidebarItemBtn = (active) => ({
   borderLeft: active ? '3px solid #1a1a1a' : '3px solid transparent',
 });
 
-const indexGroupLabel = {
-  fontSize: 11, fontWeight: 700, letterSpacing: '0.1em',
-  textTransform: 'uppercase', color: '#bbb',
-  marginBottom: 12,
-};
+const sidebarSubItemBtn = (active) => ({
+  display: 'block', width: '100%', textAlign: 'left', padding: '7px 16px 7px 28px',
+  background: active ? '#f0ede8' : 'none', border: 'none', cursor: 'pointer', fontSize: 12,
+  color: active ? '#1a1a1a' : '#555',
+  borderLeft: active ? '3px solid #1a1a1a' : '3px solid transparent',
+});
+

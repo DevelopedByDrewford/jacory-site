@@ -1,0 +1,145 @@
+/* ── Manage portal layout ─────────────────────────────────── */
+
+.manage-body {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+}
+
+.manage-sidebar {
+  width: 220px;
+  border-right: 1px solid #e0ddd8;
+  flex-shrink: 0;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+/* ── Portal index page ────────────────────────────────────── */
+
+.manage-portal {
+  padding: clamp(28px, 5vw, 48px) clamp(20px, 5vw, 48px);
+  max-width: 900px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.manage-portal-heading {
+  margin: 0 0 4px;
+  font-size: 20px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.manage-portal-sub {
+  margin: 0 0 36px;
+  font-size: 13px;
+  color: #999;
+}
+
+.manage-group {
+  margin-bottom: 32px;
+}
+
+.manage-group-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #c0bbb5;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #f0ede8;
+}
+
+/* ── Section card grid ────────────────────────────────────── */
+
+.manage-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(200px, 100%), 1fr));
+  gap: 10px;
+}
+
+.manage-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px;
+  background: #fff;
+  border: 1px solid #e0ddd8;
+  border-radius: 8px;
+  text-decoration: none;
+  color: inherit;
+  transition: box-shadow 0.15s, border-color 0.15s;
+}
+
+.manage-card:hover {
+  border-color: #c0bbb5;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+}
+
+.manage-card-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f8f7f5;
+  border-radius: 6px;
+}
+
+.manage-card-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.manage-card-label {
+  font-weight: 600;
+  font-size: 13px;
+  color: #1a1a1a;
+  margin-bottom: 2px;
+}
+
+.manage-card-desc {
+  font-size: 11px;
+  color: #999;
+  line-height: 1.4;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.manage-card-arrow {
+  font-size: 14px;
+  color: #ccc;
+  flex-shrink: 0;
+  transition: color 0.15s;
+}
+
+.manage-card:hover .manage-card-arrow {
+  color: #888;
+}
+
+/* ── Mobile: collapse sidebar ─────────────────────────────── */
+
+@media (max-width: 600px) {
+  .manage-sidebar {
+    display: none;
+  }
+
+  .manage-portal {
+    padding: 24px 16px;
+  }
+
+  .manage-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .manage-card-desc {
+    white-space: normal;
+  }
+}
