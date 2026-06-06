@@ -1,4 +1,10 @@
+import { useState, useEffect } from 'react';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../firebase';
 import { useParallax } from '../hooks';
+
+const ABOUT_FALLBACK = 'https://photos.smugmug.com/photos/i-6P9dWTm/0/KF7jsWJWKG688RbdbdBnWPKqrCKFDfdnLm2z6tQ3J/L/i-6P9dWTm-L.jpg';
+const BAND_FALLBACK = 'https://photos.smugmug.com/photos/i-WFG7MNn/0/L3h8pCJk3STwr7wvtnqQ48MMBjz9RcZ5pZrTsP3pT/XL/i-WFG7MNn-XL.jpg';
 
 const miles = [
   ['Houston', 'Born and raised in Texas. He lost his sight as a child — and decided early he would never lose his vision.'],
@@ -9,6 +15,13 @@ const miles = [
 
 export function About() {
   const portraitRef = useParallax(0.08);
+  const [aboutUrl, setAboutUrl] = useState(ABOUT_FALLBACK);
+
+  useEffect(() => {
+    getDoc(doc(db, 'config', 'about'))
+      .then((snap) => { if (snap.exists() && snap.data().activeUrl) setAboutUrl(snap.data().activeUrl); })
+      .catch(() => {});
+  }, []);
   return (
     <section className="section about" id="about">
       <div className="wrap">
@@ -32,7 +45,7 @@ export function About() {
                 style={{ position: 'absolute', inset: '-6% 0' }}
               >
                 <img
-                  src="https://photos.smugmug.com/photos/i-6P9dWTm/0/KF7jsWJWKG688RbdbdBnWPKqrCKFDfdnLm2z6tQ3J/L/i-6P9dWTm-L.jpg"
+                  src={aboutUrl}
                   alt="Portrait — Jacory, warm natural light, holding one of his books"
                   style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
                 />
@@ -74,11 +87,19 @@ export function About() {
 
 export function QuoteBand() {
   const imgRef = useParallax(0.22);
+  const [bandUrl, setBandUrl] = useState(BAND_FALLBACK);
+
+  useEffect(() => {
+    getDoc(doc(db, 'config', 'quoteBand'))
+      .then((snap) => { if (snap.exists() && snap.data().activeUrl) setBandUrl(snap.data().activeUrl); })
+      .catch(() => {});
+  }, []);
+
   return (
     <section className="band" aria-label="Quote">
       <div ref={imgRef} className="band-img">
         <img
-          src="https://photos.smugmug.com/photos/i-WFG7MNn/0/L3h8pCJk3STwr7wvtnqQ48MMBjz9RcZ5pZrTsP3pT/XL/i-WFG7MNn-XL.jpg"
+          src={bandUrl}
           alt="Wide cinematic — Jacory mid-swing on the beep baseball field, motion, dust"
           style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
         />

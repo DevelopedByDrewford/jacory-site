@@ -4,22 +4,34 @@ import { collection, getDocs } from 'firebase/firestore';
 import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
 import { db, auth } from '../firebase';
 
-const SECTIONS = [
-  {
-    label: 'Hero',
-    description: 'Upload and set the background image shown in the hero section.',
-    icon: '🖼️',
-    href: '/manage/hero',
-  },
-  {
-    label: 'Books',
-    description: 'Add, edit, and manage book listings and purchase links.',
-    icon: '📚',
-    href: '/manage/books',
-  },
+const CUSTOMIZE = [
+  { label: 'Hero',       description: 'Set the full-bleed background image in the hero section.', icon: '🖼️', href: '/manage/hero' },
+  { label: 'Books',      description: 'Add, edit, and manage book listings and purchase links.',  icon: '📚', href: '/manage/books' },
+  { label: 'Speaking',   description: 'Set the portrait photo used in the speaking section.',     icon: '🎤', href: '/manage/speaking' },
+  { label: 'About',      description: 'Set the portrait photo used in the about section.',        icon: '🧑', href: '/manage/about' },
+  { label: 'Quote Band', description: 'Set the cinematic image behind the quote strip.',          icon: '🎞️', href: '/manage/quoteband' },
+  { label: 'Contact',    description: 'Add, edit, and reorder the contact links.',                icon: '🔗', href: '/manage/contact' },
+];
+
+const REPORTS = [
+  { label: 'Submissions', description: 'View booking inquiries submitted through the contact form.', icon: '📬', href: '/manage/submissions' },
+  { label: 'Analytics',   description: 'Page views, sessions, top pages, and device breakdown.',    icon: '📊', href: '/manage/analytics' },
 ];
 
 export const ManageBooksCtx = createContext({ books: [], fetchBooks: () => {}, editingId: null, setEditingId: () => {} });
+
+function SidebarLabel({ children, first }) {
+  return (
+    <div style={{
+      padding: first ? '10px 16px 4px' : '20px 16px 4px',
+      fontSize: 10, fontWeight: 700,
+      letterSpacing: '0.1em', textTransform: 'uppercase',
+      color: '#c0bbb5', userSelect: 'none',
+    }}>
+      {children}
+    </div>
+  );
+}
 
 function ManageSidebar() {
   const { books, editingId, setEditingId } = useContext(ManageBooksCtx);
@@ -37,21 +49,23 @@ function ManageSidebar() {
   };
 
   return (
-    <aside style={{ width: 240, borderRight: '1px solid #e0ddd8', flexShrink: 0, background: '#fff', display: 'flex', flexDirection: 'column' }}>
-      <div style={{ padding: '8px 0' }}>
-        <NavLink
-          to="/manage/hero"
-          style={({ isActive }) => navLinkStyle(isActive)}
-        >
-          Hero
-        </NavLink>
-        <NavLink
-          to="/manage/books"
-          style={({ isActive }) => navLinkStyle(isActive)}
-        >
-          Books
-        </NavLink>
+    <aside style={{ width: 220, borderRight: '1px solid #e0ddd8', flexShrink: 0, background: '#fff', display: 'flex', flexDirection: 'column' }}>
+      <div style={{ padding: '0 0 8px' }}>
+        <SidebarLabel first>Customize</SidebarLabel>
+        {CUSTOMIZE.map(({ label, href }) => (
+          <NavLink key={href} to={href} style={({ isActive }) => navLinkStyle(isActive)}>
+            {label}
+          </NavLink>
+        ))}
+
+        <SidebarLabel>Reports</SidebarLabel>
+        {REPORTS.map(({ label, href }) => (
+          <NavLink key={href} to={href} style={({ isActive }) => navLinkStyle(isActive)}>
+            {label}
+          </NavLink>
+        ))}
       </div>
+
       {onBooks && (
         <div style={{ flex: 1, overflowY: 'auto', borderTop: '1px solid #e0ddd8', padding: '8px 0' }}>
           {books.map((b) => (
@@ -99,25 +113,11 @@ function LoginForm() {
           <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
             <div>
               <label style={{ display: 'block', fontSize: 12, fontWeight: 600, marginBottom: 5, color: '#444' }}>Email</label>
-              <input
-                type="email"
-                autoComplete="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                style={loginInputStyle}
-              />
+              <input type="email" autoComplete="email" required value={email} onChange={(e) => setEmail(e.target.value)} style={loginInputStyle} />
             </div>
             <div>
               <label style={{ display: 'block', fontSize: 12, fontWeight: 600, marginBottom: 5, color: '#444' }}>Password</label>
-              <input
-                type="password"
-                autoComplete="current-password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                style={loginInputStyle}
-              />
+              <input type="password" autoComplete="current-password" required value={password} onChange={(e) => setPassword(e.target.value)} style={loginInputStyle} />
             </div>
             {error && <p style={{ margin: 0, fontSize: 13, color: '#c00' }}>{error}</p>}
             <button type="submit" disabled={loading} style={loginBtnStyle}>
@@ -148,9 +148,7 @@ export function ManageLayout() {
       setBooks(snap.docs.map((d) => ({ id: d.id, ...d.data() })))
     );
 
-  useEffect(() => {
-    if (user) fetchBooks();
-  }, [user]);
+  useEffect(() => { if (user) fetchBooks(); }, [user]);
 
   if (user === undefined) return null;
   if (user === null) return <LoginForm />;
@@ -164,10 +162,7 @@ export function ManageLayout() {
           </Link>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <span style={{ fontSize: 12, color: '#aaa' }}>{user.email}</span>
-            <button
-              onClick={() => signOut(auth)}
-              style={{ fontSize: 13, color: '#666', border: '1px solid #e0ddd8', borderRadius: 6, padding: '6px 12px', cursor: 'pointer', background: '#faf9f7' }}
-            >
+            <button onClick={() => signOut(auth)} style={{ fontSize: 13, color: '#666', border: '1px solid #e0ddd8', borderRadius: 6, padding: '6px 12px', cursor: 'pointer', background: '#faf9f7' }}>
               Sign out
             </button>
             <Link to="/" style={{ fontSize: 13, color: '#666', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 5, padding: '6px 12px', border: '1px solid #e0ddd8', borderRadius: 6, background: '#faf9f7' }}>
@@ -186,46 +181,43 @@ export function ManageLayout() {
   );
 }
 
+function SectionGrid({ sections }) {
+  return (
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 14 }}>
+      {sections.map((s) => (
+        <Link
+          key={s.href}
+          to={s.href}
+          style={{ display: 'flex', flexDirection: 'column', gap: 12, padding: '24px 22px', background: '#fff', border: '1px solid #e0ddd8', borderRadius: 10, textDecoration: 'none', color: 'inherit', transition: 'box-shadow 0.2s, border-color 0.2s' }}
+          onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#1a1a1a'; e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.08)'; }}
+          onMouseLeave={(e) => { e.currentTarget.style.borderColor = '#e0ddd8'; e.currentTarget.style.boxShadow = 'none'; }}
+        >
+          <span style={{ fontSize: 26 }}>{s.icon}</span>
+          <div>
+            <div style={{ fontWeight: 600, fontSize: 14, marginBottom: 4 }}>{s.label}</div>
+            <div style={{ fontSize: 12, color: '#888', lineHeight: 1.5 }}>{s.description}</div>
+          </div>
+          <div style={{ marginTop: 'auto', fontSize: 12, color: '#bbb', paddingTop: 6 }}>Open →</div>
+        </Link>
+      ))}
+    </div>
+  );
+}
+
 export default function ManagePortal() {
   return (
-    <div style={{ padding: '48px 40px', maxWidth: 860, margin: '0 auto' }}>
-      <h1 style={{ margin: '0 0 8px', fontSize: 26, fontWeight: 700, color: '#1a1a1a' }}>Content</h1>
+    <div style={{ padding: '48px 40px', maxWidth: 900, margin: '0 auto' }}>
+      <h1 style={{ margin: '0 0 6px', fontSize: 26, fontWeight: 700, color: '#1a1a1a' }}>Management Portal</h1>
       <p style={{ margin: '0 0 40px', fontSize: 14, color: '#777' }}>Select a section to manage.</p>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 16 }}>
-        {SECTIONS.map((s) => (
-          <Link
-            key={s.href}
-            to={s.href}
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 12,
-              padding: '28px 24px',
-              background: '#fff',
-              border: '1px solid #e0ddd8',
-              borderRadius: 10,
-              textDecoration: 'none',
-              color: 'inherit',
-              transition: 'box-shadow 0.2s, border-color 0.2s',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = '#1a1a1a';
-              e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.08)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.borderColor = '#e0ddd8';
-              e.currentTarget.style.boxShadow = 'none';
-            }}
-          >
-            <span style={{ fontSize: 28 }}>{s.icon}</span>
-            <div>
-              <div style={{ fontWeight: 600, fontSize: 15, marginBottom: 4 }}>{s.label}</div>
-              <div style={{ fontSize: 13, color: '#777', lineHeight: 1.5 }}>{s.description}</div>
-            </div>
-            <div style={{ marginTop: 'auto', fontSize: 12, color: '#aaa', paddingTop: 8 }}>Open →</div>
-          </Link>
-        ))}
+      <div style={{ marginBottom: 36 }}>
+        <div style={indexGroupLabel}>Customize</div>
+        <SectionGrid sections={CUSTOMIZE} />
+      </div>
+
+      <div>
+        <div style={indexGroupLabel}>Reports</div>
+        <SectionGrid sections={REPORTS} />
       </div>
     </div>
   );
@@ -244,7 +236,7 @@ const loginBtnStyle = {
 };
 
 const navLinkStyle = (isActive) => ({
-  display: 'block', padding: '9px 16px', fontSize: 13, fontWeight: 600,
+  display: 'block', padding: '8px 16px', fontSize: 13, fontWeight: 500,
   textDecoration: 'none', color: isActive ? '#1a1a1a' : '#555',
   background: isActive ? '#f0ede8' : 'none',
   borderLeft: isActive ? '3px solid #1a1a1a' : '3px solid transparent',
@@ -256,3 +248,9 @@ const sidebarItemBtn = (active) => ({
   color: active ? '#1a1a1a' : '#444',
   borderLeft: active ? '3px solid #1a1a1a' : '3px solid transparent',
 });
+
+const indexGroupLabel = {
+  fontSize: 11, fontWeight: 700, letterSpacing: '0.1em',
+  textTransform: 'uppercase', color: '#bbb',
+  marginBottom: 12,
+};

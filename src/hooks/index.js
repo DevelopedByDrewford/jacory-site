@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
-import { collection, getDocs } from 'firebase/firestore';
-import { db } from '../firebase';
+import { useLocation } from 'react-router-dom';
+import { collection, getDocs, addDoc, serverTimestamp } from 'firebase/firestore';
+import { db, auth } from '../firebase';
 
 export const prefersReduced = () =>
   window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -25,6 +26,38 @@ export function useReveals() {
     document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
     return () => io.disconnect();
   });
+}
+
+export function trackBookClick(bookTitle, sectionLabel, linkName) {
+  if (auth.currentUser) return;
+  addDoc(collection(db, 'book_clicks'), {
+    book: bookTitle,
+    section: sectionLabel,
+    retailer: linkName,
+    ts: serverTimestamp(),
+  }).catch(() => {});
+}
+
+export function usePageTracking() {
+  const location = useLocation();
+  useEffect(() => {
+    if (location.pathname.startsWith('/manage')) return;
+    if (auth.currentUser) return;
+    let sid = sessionStorage.getItem('_sid');
+    if (!sid) {
+      sid = typeof crypto !== 'undefined' && crypto.randomUUID
+        ? crypto.randomUUID()
+        : Math.random().toString(36).slice(2) + Date.now().toString(36);
+      sessionStorage.setItem('_sid', sid);
+    }
+    addDoc(collection(db, 'page_views'), {
+      path: location.pathname,
+      ts: serverTimestamp(),
+      sessionId: sid,
+      ref: document.referrer || '',
+      w: window.innerWidth,
+    }).catch(() => {});
+  }, [location.pathname]);
 }
 
 export function useParallax(speed = 0.18) {

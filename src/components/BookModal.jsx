@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { trackBookClick } from '../hooks';
 
 export default function BookModal({ open, onClose, book }) {
   const sections = book?.purchaseSections ?? [];
@@ -59,6 +60,7 @@ export default function BookModal({ open, onClose, book }) {
                         className="modal-link"
                         target="_blank"
                         rel="noopener noreferrer"
+                        onClick={() => trackBookClick(book?.title, s.label, l.name)}
                       >
                         {l.name}
                         <span className="modal-link-arr" aria-hidden="true">→</span>

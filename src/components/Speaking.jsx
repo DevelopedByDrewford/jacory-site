@@ -1,4 +1,9 @@
+import { useState, useEffect } from 'react';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../firebase';
 import { scrollToId } from '../hooks';
+
+const FALLBACK_URL = 'https://photos.smugmug.com/photos/i-R8CcRxj/0/MpBNZZGz6rWvNMzfvxhFT5JVFvx87pkz82F6gKvKJ/X2/i-R8CcRxj-X2.jpg';
 
 const topics = [
   ['01', "Dream Past What You Can See", "A keynote on chasing a goal when the odds — or your own body — tell you no. Jacory's own story, and the mindset behind it."],
@@ -7,6 +12,16 @@ const topics = [
 ];
 
 export function Speaking() {
+  const [speakingUrl, setSpeakingUrl] = useState(FALLBACK_URL);
+
+  useEffect(() => {
+    getDoc(doc(db, 'config', 'speaking'))
+      .then((snap) => {
+        if (snap.exists() && snap.data().activeUrl) setSpeakingUrl(snap.data().activeUrl);
+      })
+      .catch(() => {});
+  }, []);
+
   return (
     <section className="section speaking" id="speaking">
       <div className="wrap">
@@ -43,7 +58,7 @@ export function Speaking() {
           </div>
           <div className="spk-visual reveal d2">
             <img
-              src="https://photos.smugmug.com/photos/i-R8CcRxj/0/MpBNZZGz6rWvNMzfvxhFT5JVFvx87pkz82F6gKvKJ/X2/i-R8CcRxj-X2.jpg"
+              src={speakingUrl}
               alt="Portrait — Jacory speaking on stage, mic in hand, warm light"
               style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
             />
