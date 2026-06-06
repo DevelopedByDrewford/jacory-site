@@ -27,7 +27,7 @@ export function About() {
       <div className="wrap">
         <div className="section-eyebrow reveal">
           <span className="eyebrow">About</span>
-          <span className="num">03</span>
+          <span className="num">02</span>
           <span className="ln" />
         </div>
 

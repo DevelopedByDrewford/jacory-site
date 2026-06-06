@@ -30,8 +30,8 @@ function Site() {
       <main>
         <Hero />
         <Books />
-        <Speaking />
         <About />
+        <Speaking />
         <Baseball />
         <QuoteBand />
         <Contact />

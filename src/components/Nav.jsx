@@ -3,8 +3,8 @@ import { scrollToId } from '../hooks';
 
 const links = [
   { id: 'books', label: 'Books' },
-  { id: 'speaking', label: 'Speaking' },
   { id: 'about', label: 'About' },
+  { id: 'speaking', label: 'Speaking' },
   { id: 'baseball', label: 'Baseball' },
 ];
 
