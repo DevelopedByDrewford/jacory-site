@@ -6,6 +6,7 @@ const links = [
   { id: 'about', label: 'About' },
   { id: 'speaking', label: 'Speaking' },
   { id: 'baseball', label: 'Baseball' },
+  { id: 'spotlight', label: 'Spotlight' },
 ];
 
 export default function Nav() {

@@ -11,6 +11,7 @@ const CUSTOMIZE = [
   { label: 'Speaking',   description: 'Set the portrait photo used in the speaking section.',     icon: '🎤', href: '/manage/speaking' },
   { label: 'About',      description: 'Set the portrait photo used in the about section.',        icon: '🧑', href: '/manage/about' },
   { label: 'Baseball',   description: 'Manage photos for the Beep Baseball and Championship sections.', icon: '⚾', href: '/manage/baseball' },
+  { label: 'Spotlight',  description: 'Add media appearances and testimonials to the Spotlight section.', icon: '✦', href: '/manage/spotlight' },
   { label: 'Quote Band', description: 'Set the cinematic image behind the quote strip.',          icon: '🎞️', href: '/manage/quoteband' },
   { label: 'Contact',    description: 'Add, edit, and reorder the contact links.',                icon: '🔗', href: '/manage/contact' },
 ];

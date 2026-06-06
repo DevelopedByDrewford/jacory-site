@@ -20,8 +20,6 @@ export default function Books() {
           <span className="ln" />
         </div>
 
-        <span aria-label="hello">Jacory</span>
-
         <div className="feat">
           <div className="feat-cover reveal" onClick={() => setModalBook(featured)} style={{ cursor: 'pointer' }}>
             {featured.coverImage
