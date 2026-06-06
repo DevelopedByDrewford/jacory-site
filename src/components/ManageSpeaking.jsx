@@ -32,8 +32,6 @@ function SpeakingSimulation({ url, mode }) {
   const colW = isDesktop ? (wrapW - gap) / 2 : wrapW;
   const imgH = colW * (5 / 4);
 
-  const s = (n) => n; // raw px within the simulated viewport
-
   return (
     <div style={{
       width: displayW,

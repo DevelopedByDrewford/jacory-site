@@ -239,13 +239,6 @@ const navLinkStyle = (isActive) => ({
   borderLeft: isActive ? '3px solid #1a1a1a' : '3px solid transparent',
 });
 
-const sidebarItemBtn = (active) => ({
-  display: 'block', width: '100%', textAlign: 'left', padding: '9px 16px',
-  background: active ? '#f0ede8' : 'none', border: 'none', cursor: 'pointer', fontSize: 13,
-  color: active ? '#1a1a1a' : '#444',
-  borderLeft: active ? '3px solid #1a1a1a' : '3px solid transparent',
-});
-
 const sidebarSubItemBtn = (active) => ({
   display: 'block', width: '100%', textAlign: 'left', padding: '7px 16px 7px 28px',
   background: active ? '#f0ede8' : 'none', border: 'none', cursor: 'pointer', fontSize: 12,

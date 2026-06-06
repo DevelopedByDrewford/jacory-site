@@ -91,7 +91,7 @@ export default function Baseball() {
               {champUrl ? (
                 <img
                   src={champUrl}
-                  alt="2022 Championship — team photo"
+                  alt="2022 Championship"
                   style={{ width: '100%', aspectRatio: '4 / 3', objectFit: 'cover', display: 'block' }}
                 />
               ) : (
