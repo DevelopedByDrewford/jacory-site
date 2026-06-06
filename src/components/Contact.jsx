@@ -81,7 +81,7 @@ export function Contact() {
             <div className="bk-contact reveal d3">
               {contactLinks.map(({ ic, label, href }) =>
                 href ? (
-                  <a key={label} href={href} target='_blank'><span className="ic">{ic}</span> {label}</a>
+                  <a key={label} href={href} target='_blank' rel="noreferrer"><span className="ic">{ic}</span> {label}</a>
                 ) : (
                   <button key={label} type="button" className="bk-contact-btn"><span className="ic">{ic}</span> {label}</button>
                 )
