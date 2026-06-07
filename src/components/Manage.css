@@ -221,3 +221,148 @@
     display: none;
   }
 }
+
+/* ── Contact link rows ────────────────────────────────────── */
+
+.contact-col-labels {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 14px;
+  margin-bottom: 8px;
+}
+
+.contact-link-body {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.contact-link-fields {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.contact-label-input {
+  width: 152px;
+}
+
+.contact-href-input {
+  flex: 1;
+  min-width: 0;
+  width: auto;
+}
+
+.contact-link-btns {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 600px) {
+  .contact-col-labels {
+    display: none;
+  }
+
+  .contact-link-body {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+  }
+
+  .contact-link-fields {
+    flex-wrap: wrap;
+    row-gap: 6px;
+  }
+
+  .contact-label-input {
+    flex: 1;
+    width: auto;
+    min-width: 0;
+  }
+
+  .contact-href-input {
+    width: 100%;
+    flex: none;
+  }
+
+  .contact-link-counter {
+    display: none;
+  }
+
+  .contact-link-btns {
+    width: 100%;
+  }
+
+  .contact-link-btns button {
+    flex: 1;
+  }
+}
+
+/* ── Books purchase link rows ─────────────────────────────── */
+
+.books-link-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.books-link-name-col {
+  flex: 0 0 180px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.books-link-url {
+  flex: 1;
+  min-width: 0;
+}
+
+@media (max-width: 600px) {
+  .books-link-name-col {
+    flex: 1;
+    min-width: 0;
+  }
+
+  /* Force URL to its own full-width line */
+  .books-link-url {
+    flex: 0 0 100%;
+  }
+}
+
+/* ── Baseball draft card ──────────────────────────────────── */
+
+.bb-draft-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.bb-draft-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 600px) {
+  .bb-draft-row {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .bb-draft-actions {
+    width: 100%;
+  }
+
+  .bb-draft-actions button {
+    flex: 1;
+  }
+}

@@ -529,7 +529,7 @@ function TextSection({ p1Placeholder, p2Placeholder, collectionName, configKey }
                     </div>
                   </>
                 ) : (
-                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: 16 }}>
+                  <div className="bb-draft-row">
                     <div style={{ flex: 1, minWidth: 0 }}>
                       {isLive && (
                         <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#fff', background: '#1a1a1a', display: 'inline-block', padding: '2px 7px', borderRadius: 3, marginBottom: 8 }}>Live</div>
@@ -538,7 +538,7 @@ function TextSection({ p1Placeholder, p2Placeholder, collectionName, configKey }
                       {draft.p2 && <p style={{ margin: 0, fontSize: 13, color: '#666', lineHeight: 1.55 }}>{draft.p2}</p>}
                       <div style={{ fontSize: 11, color: '#aaa', marginTop: 8 }}>{new Date(draft.addedAt).toLocaleDateString()}</div>
                     </div>
-                    <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
+                    <div className="bb-draft-actions">
                       <button
                         onClick={() => setLive(draft)}
                         disabled={isLive}

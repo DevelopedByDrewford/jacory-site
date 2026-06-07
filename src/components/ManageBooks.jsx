@@ -338,30 +338,33 @@ export default function ManageBooks() {
         <div key={section.label} style={{ marginBottom: 16, padding: 20, border: '1px solid #e0ddd8', borderRadius: 8, background: '#fff' }}>
           <div style={{ fontWeight: 600, marginBottom: 14, color: '#1a1a1a' }}>{section.icon} {section.label}</div>
           {section.links.map((link, li) => (
-            <div key={li} style={{ display: 'flex', flexWrap: 'wrap', gap: 8, alignItems: 'flex-start', marginBottom: 8 }}>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 4, flex: '0 0 min(180px, 100%)' }}>
-                <select
-                  value={link.isCustom ? '__custom__' : link.name}
-                  onChange={(e) => setLink(si, li, 'select', e.target.value)}
-                  style={inputStyle}
-                >
-                  <option value="">Select…</option>
-                  {SECTION_PRESETS[section.label].map((p) => (
-                    <option key={p} value={p}>{p}</option>
-                  ))}
-                  <option value="__custom__">Add new…</option>
-                </select>
-                {link.isCustom && (
+            <div key={li} className="books-link-row">
+              <div className="books-link-name-col">
+                {link.isCustom ? (
                   <input
                     style={inputStyle}
                     placeholder="Custom name"
                     value={link.name}
+                    autoFocus
                     onChange={(e) => setLink(si, li, 'name', e.target.value)}
                   />
+                ) : (
+                  <select
+                    value={link.name}
+                    onChange={(e) => setLink(si, li, 'select', e.target.value)}
+                    style={inputStyle}
+                  >
+                    <option value="">Select…</option>
+                    {SECTION_PRESETS[section.label].map((p) => (
+                      <option key={p} value={p}>{p}</option>
+                    ))}
+                    <option value="__custom__">Add new…</option>
+                  </select>
                 )}
               </div>
               <input
-                style={{ ...inputStyle, flex: 1 }}
+                className="books-link-url"
+                style={inputStyle}
                 placeholder="https://…"
                 value={link.href}
                 onChange={(e) => setLink(si, li, 'href', e.target.value)}

@@ -37,7 +37,7 @@ function LinkRow({ row, onField, onSave, onDelete, saving, isDragging, isDragOve
       }}
     >
       {/* Drag handle */}
-      <div style={{ cursor: row._new ? 'default' : 'grab', opacity: row._new ? 0.25 : 1, flexShrink: 0, display: 'flex', alignItems: 'center' }}>
+      <div style={{ cursor: row._new ? 'default' : 'grab', opacity: row._new ? 0.25 : 1, flexShrink: 0, display: 'flex', alignItems: 'flex-start', paddingTop: 10 }}>
         <svg width="10" height="14" viewBox="0 0 10 14">
           <circle cx="2" cy="2.5" r="1.3" fill="#c8c5c0" />
           <circle cx="8" cy="2.5" r="1.3" fill="#c8c5c0" />
@@ -48,89 +48,89 @@ function LinkRow({ row, onField, onSave, onDelete, saving, isDragging, isDragOve
         </svg>
       </div>
 
-      {/* ic input */}
-      <input
-        value={row.ic}
-        maxLength={2}
-        onChange={(e) => onField('ic', e.target.value)}
-        onFocus={() => setFocused('ic')}
-        onBlur={() => setFocused(null)}
-        placeholder="@"
-        style={inputStyle('ic', { width: 48, textAlign: 'center', fontWeight: 600, fontSize: 14 })}
-      />
-      {/* ic counter — black at max, not red */}
-      <span style={{
-        fontSize: 10, flexShrink: 0, width: 20, textAlign: 'right', userSelect: 'none',
-        color: row.ic.length === 2 ? '#1a1a1a' : '#ccc',
-        fontWeight: row.ic.length === 2 ? 600 : 400,
-      }}>
-        {row.ic.length}/2
-      </span>
+      <div className="contact-link-body">
+        {/* Inputs */}
+        <div className="contact-link-fields">
+          <input
+            value={row.ic}
+            maxLength={2}
+            onChange={(e) => onField('ic', e.target.value)}
+            onFocus={() => setFocused('ic')}
+            onBlur={() => setFocused(null)}
+            placeholder="@"
+            style={inputStyle('ic', { width: 48, textAlign: 'center', fontWeight: 600, fontSize: 14 })}
+          />
+          <span className="contact-link-counter" style={{
+            fontSize: 10, flexShrink: 0, width: 20, textAlign: 'right', userSelect: 'none',
+            color: row.ic.length === 2 ? '#1a1a1a' : '#ccc',
+            fontWeight: row.ic.length === 2 ? 600 : 400,
+          }}>
+            {row.ic.length}/2
+          </span>
+          <input
+            value={row.label}
+            maxLength={20}
+            onChange={(e) => onField('label', e.target.value)}
+            onFocus={() => setFocused('label')}
+            onBlur={() => setFocused(null)}
+            placeholder="Label"
+            className="contact-label-input"
+            style={inputStyle('label', {})}
+          />
+          <span className="contact-link-counter" style={{
+            fontSize: 10, flexShrink: 0, width: 28, textAlign: 'right', userSelect: 'none',
+            color: row.label.length === 20 ? '#1a1a1a' : row.label.length > 15 ? '#b07700' : '#ccc',
+            fontWeight: row.label.length === 20 ? 600 : 400,
+          }}>
+            {row.label.length}/20
+          </span>
+          <input
+            value={row.href}
+            type="url"
+            onChange={(e) => onField('href', e.target.value)}
+            onFocus={() => setFocused('href')}
+            onBlur={() => setFocused(null)}
+            placeholder="https://…"
+            className="contact-href-input"
+            style={inputStyle('href', {})}
+          />
+        </div>
 
-      {/* label input */}
-      <input
-        value={row.label}
-        maxLength={20}
-        onChange={(e) => onField('label', e.target.value)}
-        onFocus={() => setFocused('label')}
-        onBlur={() => setFocused(null)}
-        placeholder="Label"
-        style={inputStyle('label', { width: 152 })}
-      />
-      {/* label counter */}
-      <span style={{
-        fontSize: 10, flexShrink: 0, width: 28, textAlign: 'right', userSelect: 'none',
-        color: row.label.length === 20 ? '#1a1a1a' : row.label.length > 15 ? '#b07700' : '#ccc',
-        fontWeight: row.label.length === 20 ? 600 : 400,
-      }}>
-        {row.label.length}/20
-      </span>
-
-      {/* href input */}
-      <input
-        value={row.href}
-        type="url"
-        onChange={(e) => onField('href', e.target.value)}
-        onFocus={() => setFocused('href')}
-        onBlur={() => setFocused(null)}
-        placeholder="https://…"
-        style={inputStyle('href', { flex: 1, minWidth: 0, width: 'auto' })}
-      />
-
-      {/* Save */}
-      <button
-        onClick={onSave}
-        disabled={!canSave || saving}
-        style={{
-          height: 36, padding: '0 16px', flexShrink: 0, minWidth: 56,
-          borderRadius: 6, border: 'none',
-          background: canSave ? '#1a1a1a' : '#f0ede8',
-          color: canSave ? '#fff' : '#c0bbb5',
-          fontWeight: 600, fontSize: 12, letterSpacing: '0.01em',
-          cursor: canSave && !saving ? 'pointer' : 'default',
-          transition: 'background 0.15s, color 0.15s',
-          fontFamily: 'inherit',
-        }}
-      >
-        {saving ? '…' : row._new ? 'Add' : 'Save'}
-      </button>
-
-      {/* Delete */}
-      <button
-        onClick={onDelete}
-        style={{
-          width: 36, height: 36, flexShrink: 0,
-          borderRadius: 6, border: '1px solid #e0ddd8',
-          background: 'none', color: '#c8c5c0', fontSize: 13,
-          cursor: 'pointer', display: 'grid', placeItems: 'center',
-          transition: 'border-color 0.15s, color 0.15s, background 0.15s',
-          fontFamily: 'inherit',
-        }}
-        onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#ffa39e'; e.currentTarget.style.color = '#cf1322'; e.currentTarget.style.background = '#fff1f0'; }}
-        onMouseLeave={(e) => { e.currentTarget.style.borderColor = '#e0ddd8'; e.currentTarget.style.color = '#c8c5c0'; e.currentTarget.style.background = 'none'; }}
-      >
-        ✕
-      </button>
+        {/* Buttons */}
+        <div className="contact-link-btns">
+          <button
+            onClick={onSave}
+            disabled={!canSave || saving}
+            style={{
+              height: 36, padding: '0 16px', minWidth: 56,
+              borderRadius: 6, border: 'none',
+              background: canSave ? '#1a1a1a' : '#f0ede8',
+              color: canSave ? '#fff' : '#c0bbb5',
+              fontWeight: 600, fontSize: 12, letterSpacing: '0.01em',
+              cursor: canSave && !saving ? 'pointer' : 'default',
+              transition: 'background 0.15s, color 0.15s',
+              fontFamily: 'inherit',
+            }}
+          >
+            {saving ? '…' : row._new ? 'Add' : 'Save'}
+          </button>
+          <button
+            onClick={onDelete}
+            style={{
+              width: 36, height: 36, flexShrink: 0,
+              borderRadius: 6, border: '1px solid #e0ddd8',
+              background: 'none', color: '#c8c5c0', fontSize: 13,
+              cursor: 'pointer', display: 'grid', placeItems: 'center',
+              transition: 'border-color 0.15s, color 0.15s, background 0.15s',
+              fontFamily: 'inherit',
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#ffa39e'; e.currentTarget.style.color = '#cf1322'; e.currentTarget.style.background = '#fff1f0'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.borderColor = '#e0ddd8'; e.currentTarget.style.color = '#c8c5c0'; e.currentTarget.style.background = 'none'; }}
+          >
+            ✕
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
@@ -230,7 +230,7 @@ export default function ManageContact() {
 
       {/* Column labels */}
       {rows.length > 0 && (
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '0 14px', marginBottom: 8 }}>
+        <div className="contact-col-labels">
           <div style={{ width: 10, flexShrink: 0 }} />
           <div style={{ width: 48, fontSize: 11, fontWeight: 600, color: '#aaa', textAlign: 'center', letterSpacing: '0.06em', textTransform: 'uppercase' }}>Btn</div>
           <div style={{ width: 20 }} />
