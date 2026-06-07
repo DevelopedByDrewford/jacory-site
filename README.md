@@ -1,70 +1,131 @@
-# Getting Started with Create React App
+# Jacory Wiley — Personal Site
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Personal website for Jacory Wiley. Built with React, Firebase, and deployed on Netlify.
 
-## Available Scripts
+## Tech Stack
 
-In the project directory, you can run:
+- **React** (Create React App) — single-page app
+- **Firebase Firestore** — content storage (images, books, copy, contact links, analytics)
+- **Firebase Auth** — email/password login for the management portal
+- **Netlify** — hosting, SPA redirect rules, serverless functions
+- **Nodemailer via Netlify Functions** — email delivery for booking form submissions
 
-### `npm start`
+---
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Local Development
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+```bash
+npm install
+npm start
+```
 
-### `npm test`
+The app runs at `http://localhost:3000`.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Environment Variables
 
-### `npm run build`
+Create a `.env.local` file in the project root with the following variables. All are required for Firebase to connect; the Gmail vars are only needed to test email delivery locally.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```
+REACT_APP_FIREBASE_API_KEY=
+REACT_APP_FIREBASE_AUTH_DOMAIN=
+REACT_APP_FIREBASE_PROJECT_ID=
+REACT_APP_FIREBASE_STORAGE_BUCKET=
+REACT_APP_FIREBASE_MESSAGING_SENDER_ID=
+REACT_APP_FIREBASE_APP_ID=
+REACT_APP_FIREBASE_MEASUREMENT_ID=
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+GMAIL_USER=
+GMAIL_APP_PASSWORD=
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+`GMAIL_USER` and `GMAIL_APP_PASSWORD` are also set as environment variables in the Netlify dashboard for the deployed function.
 
-### `npm run eject`
+---
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Deployment
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+The site is deployed automatically on Netlify on push to `main`. No manual build step is needed.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+`netlify.toml` sets:
+- **Functions directory** — `netlify/functions/`
+- **SPA redirect** — all paths → `index.html` with status 200
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+---
 
-## Learn More
+## Management Portal
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+The portal is accessible at `/manage`. It requires Firebase email/password authentication.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Customize
 
-### Code Splitting
+| Route | Purpose |
+|---|---|
+| `/manage/hero` | Upload/select the full-bleed hero background image |
+| `/manage/books` | Add, edit, reorder, and toggle books live; manage purchase links per section (Physical / Digital / Audio) |
+| `/manage/speaking` | Upload/select the speaking section portrait |
+| `/manage/about` | Upload/select the about section portrait |
+| `/manage/baseball` | Manage images and text drafts for the Beep Baseball and 2022 Championship sections |
+| `/manage/spotlight` | Add media appearances and testimonials shown in the Spotlight section |
+| `/manage/quoteband` | Upload/select the image behind the quote strip |
+| `/manage/contact` | Add, edit, and reorder contact/booking links |
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+### Reports
 
-### Analyzing the Bundle Size
+| Route | Purpose |
+|---|---|
+| `/manage/submissions` | View booking inquiries submitted via the contact form |
+| `/manage/analytics` | Page views, sessions, top pages, and device breakdown |
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+---
 
-### Making a Progressive Web App
+## Firebase Data Structure
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+### Collections
 
-### Advanced Configuration
+| Collection | Contents |
+|---|---|
+| `books` | Book documents — title, cover image, description, meta, purchase sections, live flag, order |
+| `heroImages` | Uploaded hero image URLs + alt text |
+| `aboutImages` | Uploaded about portrait URLs + alt text |
+| `speakingImages` | Uploaded speaking portrait URLs + alt text |
+| `quoteBandImages` | Uploaded quote band image URLs + alt text |
+| `beepBaseballImages` | Beep Baseball section images |
+| `championshipImages` | 2022 Championship section images |
+| `beepBaseballDrafts` | Text drafts for the Beep Baseball section |
+| `championshipDrafts` | Text drafts for the Championship section |
+| `mediaAppearances` | Press/interview entries for the Spotlight carousel |
+| `testimonials` | Quote cards (with up to 3 photos) for the Spotlight section |
+| `contactLinks` | Booking/contact links (icon, label, URL, order) |
+| `submissions` | Booking form submissions |
+| `page_views` | Anonymous page view events (path, timestamp, session ID, viewport width) |
+| `book_clicks` | Purchase link click events (book title, retailer, section) |
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+### Config Documents (`config` collection)
 
-### Deployment
+Each document stores the currently active/live selection for that section.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+| Document | Fields |
+|---|---|
+| `hero` | `activeUrl`, `activeAlt` |
+| `about` | `activeUrl`, `activeAlt` |
+| `speaking` | `activeUrl`, `activeAlt` |
+| `quoteBand` | `activeUrl`, `activeAlt` |
+| `beepBaseball` | `activeUrl`, `activeAlt` |
+| `championship` | `activeUrl`, `activeAlt` |
+| `beepBaseballText` | `activeDraftId`, `p1`, `p2`, `ctaLabel`, `ctaLink` |
+| `championshipText` | `activeDraftId`, `p1`, `p2`, `ctaLabel`, `ctaLink` |
+| `submissionSettings` | `notifyEmails` (array of addresses to notify on new submission) |
 
-### `npm run build` fails to minify
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## Netlify Function
+
+### `netlify/functions/send-notification.js`
+
+Called by the contact form on submission. Sends an email via Gmail (Nodemailer) to all addresses listed in `config/submissionSettings.notifyEmails`.
+
+**Required Netlify environment variables:**
+- `GMAIL_USER` — the Gmail address used as the sender
+- `GMAIL_APP_PASSWORD` — a Gmail App Password (not the account password)
+
+The function accepts a `POST` with JSON body `{ to: string[], submission: { name, email, organization, event_type, message } }`.

@@ -17,8 +17,8 @@ const CUSTOMIZE = [
 ];
 
 const REPORTS = [
-  { label: 'Submissions', description: 'View booking inquiries submitted through the contact form.', icon: '📬', href: '/manage/submissions' },
   { label: 'Analytics',   description: 'Page views, sessions, top pages, and device breakdown.',    icon: '📊', href: '/manage/analytics' },
+  { label: 'Submissions', description: 'View booking inquiries submitted through the contact form.', icon: '📬', href: '/manage/submissions' },
 ];
 
 export const ManageBooksCtx = createContext({ books: [], fetchBooks: () => {}, editingId: null, setEditingId: () => {} });
