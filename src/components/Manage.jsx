@@ -8,8 +8,8 @@ import './Manage.css';
 const CUSTOMIZE = [
   { label: 'Hero',       description: 'Set the full-bleed background image in the hero section.', icon: '🖼️', href: '/manage/hero' },
   { label: 'Books',      description: 'Add, edit, and manage book listings and purchase links.',  icon: '📚', href: '/manage/books' },
-  { label: 'Speaking',   description: 'Set the portrait photo used in the speaking section.',     icon: '🎤', href: '/manage/speaking' },
   { label: 'About',      description: 'Set the portrait photo used in the about section.',        icon: '🧑', href: '/manage/about' },
+  { label: 'Speaking',   description: 'Set the portrait photo used in the speaking section.',     icon: '🎤', href: '/manage/speaking' },
   { label: 'Baseball',   description: 'Manage photos for the Beep Baseball and Championship sections.', icon: '⚾', href: '/manage/baseball' },
   { label: 'Spotlight',  description: 'Add media appearances and testimonials to the Spotlight section.', icon: '✦', href: '/manage/spotlight' },
   { label: 'Quote Band', description: 'Set the cinematic image behind the quote strip.',          icon: '🎞️', href: '/manage/quoteband' },
@@ -213,16 +213,17 @@ function SectionGrid({ sections }) {
 export default function ManagePortal() {
   return (
     <div className="manage-portal">
-      <h1 className="manage-portal-heading">Portal</h1>
+      <h1 className="manage-portal-heading">Portal 🔧</h1>
       <p className="manage-portal-sub">Select a section to manage.</p>
+      <p className="manage-portal-warning">WARNING❗ <br /><br />Changes made here will affect the live site immediately.</p>
 
       <div className="manage-group">
-        <div className="manage-group-label">Customize</div>
+        <div className="manage-group-label">Customize 🎨</div>
         <SectionGrid sections={CUSTOMIZE} />
       </div>
 
       <div className="manage-group">
-        <div className="manage-group-label">Reports</div>
+        <div className="manage-group-label">Reports 📈</div>
         <SectionGrid sections={REPORTS} />
       </div>
     </div>

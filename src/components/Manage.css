@@ -38,6 +38,16 @@
   color: #999;
 }
 
+.manage-portal-warning {
+  margin: 0 0 36px;
+  padding: 12px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  color: #c00;
+  background-color: #E8B4B4;
+  font-weight: 600;
+}
+
 .manage-group {
   margin-bottom: 32px;
 }
